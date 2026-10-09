@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useEffect } from "react";
 import { MotionConfig, useReducedMotion } from "framer-motion";
 import { ReactLenis } from "lenis/react";
 import { Footer } from "@/components/layout/Footer";
@@ -29,6 +30,44 @@ const SECTION_IDS: readonly SectionId[] = [
   "contact",
 ];
 
+function isEditableTarget(target: EventTarget | null) {
+  if (!(target instanceof Element)) return false;
+  return Boolean(
+    target.closest(
+      "input, textarea, select, [contenteditable=''], [contenteditable='true'], [data-allow-select]",
+    ),
+  );
+}
+
+function useContentProtection() {
+  useEffect(() => {
+    const preventCopy = (event: ClipboardEvent) => {
+      if (!isEditableTarget(event.target)) event.preventDefault();
+    };
+
+    const preventProtectedImageAction = (event: Event) => {
+      if (
+        event.target instanceof Element &&
+        event.target.closest("img, picture, svg, canvas")
+      ) {
+        event.preventDefault();
+      }
+    };
+
+    document.addEventListener("copy", preventCopy);
+    document.addEventListener("cut", preventCopy);
+    document.addEventListener("dragstart", preventProtectedImageAction);
+    document.addEventListener("contextmenu", preventProtectedImageAction);
+
+    return () => {
+      document.removeEventListener("copy", preventCopy);
+      document.removeEventListener("cut", preventCopy);
+      document.removeEventListener("dragstart", preventProtectedImageAction);
+      document.removeEventListener("contextmenu", preventProtectedImageAction);
+    };
+  }, []);
+}
+
 function SmoothScroll({ children }: { children: ReactNode }) {
   const reduceMotion = useReducedMotion();
   if (reduceMotion) return <>{children}</>;
@@ -40,6 +79,7 @@ function SmoothScroll({ children }: { children: ReactNode }) {
 }
 
 export default function App() {
+  useContentProtection();
   const active = useActiveSection(SECTION_IDS);
   const { y } = useScrollState();
   const pastHero = y > window.innerHeight * 0.6;

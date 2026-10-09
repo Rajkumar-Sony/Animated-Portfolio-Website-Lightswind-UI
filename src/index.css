@@ -129,6 +129,36 @@
   --signature-fill-bottom: var(--surface-raised);
 }
 
+html,
+body,
+#root {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+body {
+  -webkit-touch-callout: none;
+}
+
+img,
+picture,
+svg,
+canvas,
+video {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+input,
+textarea,
+select,
+[contenteditable=""],
+[contenteditable="true"],
+[data-allow-select] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 .dark {
   color-scheme: dark;
   --surface: #000000;
