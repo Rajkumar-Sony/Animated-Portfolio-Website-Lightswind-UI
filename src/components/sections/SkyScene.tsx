@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { motion, motionValue, useInView, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { motion, motionValue, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { cn } from "@/lib/cn";
+import { useMotionProfile } from "@/hooks/useMotionProfile";
 import { Airplane, Helicopter, HotAirBalloon, Parachutist, type Heading } from "./SkyCraft";
 import { AIRPLANE, BALLOON, HELICOPTER, PARACHUTE } from "./skyCraftSizes";
 
@@ -399,10 +400,11 @@ export function SkyScene({ className }: { className?: string }) {
    * `data-sky-avoid` ID card, and haze out while crossing behind the copy.
    */
   const page = useRef<{ box: Box; haze: boolean }[]>([]);
-  const inView = useInView(ref, { margin: "120px 0px" });
   const reduceMotion = useReducedMotion() ?? false;
+  const { reduceEffects } = useMotionProfile();
   const { scrollY } = useScroll();
   const parallax = useTransform(scrollY, [0, 800], [0, 120], { clamp: false });
+  const parallaxEnabled = !reduceMotion && !reduceEffects;
 
   useEffect(() => {
     const node = ref.current;
@@ -432,7 +434,7 @@ export function SkyScene({ className }: { className?: string }) {
     const slots = FLEET.flatMap((item, slot) => (bounds.width >= (item.minWidth ?? 0) ? [slot] : []));
     // The scene drifts with the parallax, so page content sits that much higher in scene coordinates.
     const pageInScene = () => {
-      const shift = reduceMotion ? 0 : parallax.get();
+      const shift = parallaxEnabled ? parallax.get() : 0;
       return page.current.map(({ box, haze }) => ({ box: { ...box, cy: box.cy - shift }, haze }));
     };
     const copyOf = (blocks: ReturnType<typeof pageInScene>) => blocks.filter(({ haze }) => haze).map(({ box }) => box);
@@ -482,11 +484,16 @@ export function SkyScene({ className }: { className?: string }) {
     let current = trips;
     const opening = copyOf(pageInScene());
     current.forEach((trip) => draw(fly(trip), opening));
-    if (reduceMotion || !inView) return;
+    if (reduceMotion) return;
 
     let frame = 0;
     let last = performance.now();
     const tick = (now: number) => {
+      if (document.hidden) {
+        last = now;
+        frame = requestAnimationFrame(tick);
+        return;
+      }
       // Cap the step so a backgrounded tab resumes smoothly instead of teleporting.
       const dt = Math.min(now - last, 64) / 1000;
       last = now;
@@ -523,13 +530,15 @@ export function SkyScene({ className }: { className?: string }) {
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [bounds, trips, rigs, inView, reduceMotion, parallax]);
+    // parallax is read via .get() inside the loop; listing it would restart the RAF every scroll frame.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- parallax MotionValue is intentionally omitted
+  }, [bounds, trips, rigs, reduceMotion, parallaxEnabled]);
 
   return (
     <motion.div
       ref={ref}
       aria-hidden
-      style={{ y: reduceMotion ? 0 : parallax }}
+      style={{ y: parallaxEnabled ? parallax : 0 }}
       className={cn(
         "pointer-events-none absolute inset-0 overflow-hidden",
         "[mask-image:linear-gradient(to_bottom,black_calc(100%-10rem),transparent_calc(100%-5rem))]",
@@ -543,7 +552,7 @@ export function SkyScene({ className }: { className?: string }) {
         return (
           <motion.div
             key={slot}
-            className="absolute top-0 left-0 will-change-transform"
+            className={cn("absolute top-0 left-0", !reduceEffects && "will-change-transform")}
             style={{
               x: rig.x,
               y: rig.y,

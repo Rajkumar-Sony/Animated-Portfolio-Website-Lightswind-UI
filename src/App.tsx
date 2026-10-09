@@ -16,6 +16,7 @@ import { Projects } from "@/components/sections/Projects";
 import { Services } from "@/components/sections/Services";
 import type { SectionId } from "@/data/portfolio";
 import { useActiveSection } from "@/hooks/useActiveSection";
+import { useMotionProfile } from "@/hooks/useMotionProfile";
 import { useScrollState } from "@/hooks/useScrollState";
 
 const SECTION_IDS: readonly SectionId[] = [
@@ -76,7 +77,9 @@ function useContentProtection() {
 
 function SmoothScroll({ children }: { children: ReactNode }) {
   const reduceMotion = useReducedMotion();
-  if (reduceMotion) return <>{children}</>;
+  const { preferNativeScroll } = useMotionProfile();
+  // Lenis fights iOS momentum scroll and breaks Framer scroll-linked motion → animations freeze.
+  if (reduceMotion || preferNativeScroll) return <>{children}</>;
   return (
     <ReactLenis root options={{ lerp: 0.1, anchors: { offset: -96 } }}>
       {children}

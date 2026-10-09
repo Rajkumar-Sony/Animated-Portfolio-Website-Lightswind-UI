@@ -1,6 +1,8 @@
 import { SparklesCore } from "@/components/ui/SparklesCore";
+import { useMotionProfile } from "@/hooks/useMotionProfile";
 
 export function HeroBrandUnderline() {
+  const { reduceEffects } = useMotionProfile();
   return (
     <div
       className="premium-hero-line relative mt-1.5 h-8 w-full max-w-xl overflow-hidden bg-transparent sm:h-10 sm:max-w-2xl [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_75%)] [-webkit-mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_75%)]"
@@ -16,7 +18,8 @@ export function HeroBrandUnderline() {
         background="transparent"
         minSize={0.4}
         maxSize={1}
-        particleDensity={800}
+        particleDensity={reduceEffects ? 120 : 800}
+        lite={reduceEffects}
         className="h-full w-full bg-transparent"
         particleColor="#6366f1"
       />

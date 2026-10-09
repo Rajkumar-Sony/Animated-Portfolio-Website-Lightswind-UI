@@ -14,6 +14,8 @@ type SparklesCoreProps = {
   speed?: number;
   particleColor?: string;
   particleDensity?: number;
+  /** Lower FPS and skip retina scaling on touch / narrow layouts. */
+  lite?: boolean;
 };
 
 const initSlimEngine = async (engine: Engine) => {
@@ -29,6 +31,7 @@ export function SparklesCore({
   speed = 4,
   particleColor = "#ffffff",
   particleDensity = 120,
+  lite = false,
 }: SparklesCoreProps) {
   const controls = useAnimation();
 
@@ -54,7 +57,7 @@ export function SparklesCore({
         enable: false,
         zIndex: 1,
       },
-      fpsLimit: 120,
+      fpsLimit: lite ? 30 : 60,
       interactivity: {
         events: {
           onClick: { enable: false, mode: "push" },
@@ -92,9 +95,9 @@ export function SparklesCore({
           value: { min: minSize, max: maxSize },
         },
       },
-      detectRetina: true,
+      detectRetina: !lite,
     }),
-    [background, minSize, maxSize, particleColor, particleDensity, speed],
+    [background, minSize, maxSize, particleColor, particleDensity, speed, lite],
   );
 
   return (

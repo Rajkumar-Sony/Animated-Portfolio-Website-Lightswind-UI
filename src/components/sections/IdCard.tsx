@@ -132,7 +132,7 @@ export function IdCard() {
             onDragEnd={flip}
             onTap={flip}
             style={{ x, y, rotate, transformOrigin: `50% ${STRAP_END_Y}px` }}
-            className="relative z-20 cursor-grab touch-none select-none"
+            className="relative z-20 cursor-grab touch-pan-y select-none"
           >
             <LanyardTag strap={false} className="relative z-10" />
             <motion.div
