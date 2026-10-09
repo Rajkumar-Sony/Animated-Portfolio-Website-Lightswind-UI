@@ -1,5 +1,6 @@
 import type { CSSProperties, PointerEvent } from "react";
 import { GridPattern } from "@/components/ui/GridPattern";
+import { PageMascot } from "@/components/ui/PageMascot";
 import { Reveal, RevealItem } from "@/components/ui/Reveal";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { services } from "@/data/portfolio";
@@ -35,6 +36,8 @@ export function Services() {
         highlight="Do"
         align="center"
         description="Backend engineering across the whole lifecycle: designing APIs, shipping them through CI/CD and keeping them healthy in production."
+        mascot={<PageMascot size={116} />}
+        mascotPlacement="top"
       />
       <Reveal as="ul" className="grid gap-4 sm:grid-cols-2">
         {services.map(({ title, description, icon: Icon }, index) => (

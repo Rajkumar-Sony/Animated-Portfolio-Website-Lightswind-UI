@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 import ScrollStack, { type ScrollStackCard } from "@/components/lightswind-pro/scroll-stack";
+import { PageMascot } from "@/components/ui/PageMascot";
 import { Reveal, RevealItem } from "@/components/ui/Reveal";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { projects, type Project } from "@/data/portfolio";
@@ -115,6 +116,8 @@ export function Projects() {
       title="Selected"
       highlight="Works"
       description="SaaS products and enterprise systems where I built the backend. Open a project to see the problem, my role, how it works and the results."
+      mascot={<PageMascot />}
+      mascotPlacement="right"
     />
   );
 

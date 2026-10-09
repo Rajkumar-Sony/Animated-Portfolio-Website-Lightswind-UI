@@ -4,6 +4,7 @@ import { BulletTrain, type TrainDirection } from "@/components/sections/BulletTr
 import { Departure } from "@/components/sections/Departure";
 import { NextStop } from "@/components/sections/NextStop";
 import { Station } from "@/components/sections/Station";
+import { PageMascot } from "@/components/ui/PageMascot";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { career, type CareerEntry } from "@/data/portfolio";
 import { cn } from "@/lib/cn";
@@ -122,6 +123,8 @@ export function Career() {
         highlight="Journey"
         align="center"
         description="From Bangalore to Osaka: building and running Java backends in production"
+        mascot={<PageMascot size={116} />}
+        mascotPlacement="top"
       />
       <Departure departed={departed} since={career[0].period.split(" – ")[0]} />
       <ol ref={listRef} className="relative flex flex-col gap-10 pt-10 md:gap-16 md:pt-12">

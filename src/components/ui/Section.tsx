@@ -27,6 +27,8 @@ type SectionHeadingProps = {
   description?: ReactNode;
   align?: "left" | "center";
   icon?: LucideIcon;
+  mascot?: ReactNode;
+  mascotPlacement?: "right" | "top";
   className?: string;
 };
 
@@ -37,18 +39,16 @@ export function SectionHeading({
   description,
   align = "left",
   icon: Icon,
+  mascot,
+  mascotPlacement = "right",
   className,
 }: SectionHeadingProps) {
-  return (
-    <motion.header
-      variants={stagger(0.08)}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
+  const headingContent = (
+    <div
       className={cn(
-        "mb-10 flex flex-col gap-3 md:mb-14",
+        "flex flex-col gap-3",
         align === "center" && "items-center text-center",
-        className,
+        mascotPlacement === "right" && mascot && "min-w-0",
       )}
     >
       <motion.h2
@@ -72,6 +72,35 @@ export function SectionHeading({
         >
           {description}
         </motion.p>
+      )}
+    </div>
+  );
+
+  return (
+    <motion.header
+      variants={stagger(0.08)}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-80px" }}
+      className={cn(
+        "mb-10 md:mb-14",
+        mascotPlacement === "right" && mascot
+          ? "grid items-start gap-6 md:grid-cols-[minmax(0,1fr)_auto]"
+          : "flex flex-col gap-3",
+        align === "center" && "items-center text-center",
+        className,
+      )}
+    >
+      {mascotPlacement === "top" && mascot && (
+        <motion.div variants={fadeUp} className="mb-1 flex justify-center">
+          {mascot}
+        </motion.div>
+      )}
+      {headingContent}
+      {mascotPlacement === "right" && mascot && (
+        <motion.div variants={fadeUp} className="hidden justify-self-end sm:block">
+          {mascot}
+        </motion.div>
       )}
     </motion.header>
   );

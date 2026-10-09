@@ -1,4 +1,5 @@
 import { ThreeDRotatingCarousel } from "@/components/lightswind-pro/3d-rotating-carousel";
+import { PageMascot } from "@/components/ui/PageMascot";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import courseVaultMockup from "@/assets/projects/coursevault-device-mockup.png";
 
@@ -33,6 +34,8 @@ export function BuiltProjects() {
         title="Projects I"
         highlight="Built"
         description="Personal apps, tools, and experiments I designed and built outside company project work."
+        mascot={<PageMascot />}
+        mascotPlacement="right"
       />
       <ThreeDRotatingCarousel items={builtProjectItems} autoRotate={false} />
     </Section>

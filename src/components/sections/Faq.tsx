@@ -1,4 +1,5 @@
 import { ChevronDown } from "lucide-react";
+import { PageMascot } from "@/components/ui/PageMascot";
 import { Reveal, RevealItem } from "@/components/ui/Reveal";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { faqs } from "@/data/portfolio";
@@ -12,6 +13,8 @@ export function Faq() {
         highlight="Anything"
         align="center"
         description="Straight answers to the questions recruiters and interviewers ask me most."
+        mascot={<PageMascot size={116} />}
+        mascotPlacement="top"
       />
       <Reveal as="ul" className="mx-auto flex max-w-3xl flex-col gap-3">
         {faqs.map(({ question, answer }) => (

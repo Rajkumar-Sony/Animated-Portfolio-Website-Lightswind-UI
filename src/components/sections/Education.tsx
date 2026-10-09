@@ -21,6 +21,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import ScrollStack, { type ScrollStackCard } from "@/components/lightswind-pro/scroll-stack";
+import { PageMascot } from "@/components/ui/PageMascot";
 import { Reveal, RevealItem } from "@/components/ui/Reveal";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import {
@@ -262,6 +263,8 @@ export function Education() {
             title="Academic"
             highlight="Background"
             description="The computer applications degrees behind my Java backend work, plus the skills I use every day."
+            mascot={<PageMascot />}
+            mascotPlacement="right"
           />
         }
       />
