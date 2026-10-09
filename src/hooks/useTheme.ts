@@ -9,7 +9,8 @@ function readTheme(): Theme {
 /**
  * Tracks the `dark` class on <html>, whoever changes it, and keeps the
  * browser theme-color in step. The initial class is set by the inline
- * script in index.html to avoid a flash; the toggle persists to localStorage.
+ * script in index.html (defaults to light when nothing is stored); the toggle
+ * persists to localStorage.
  */
 export function useTheme(): Theme {
   const [theme, setTheme] = useState<Theme>(readTheme);
