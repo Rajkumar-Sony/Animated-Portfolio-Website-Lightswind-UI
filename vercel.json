@@ -1,5 +1,15 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/approve/:token",
+      "destination": "/api/approve/:token"
+    },
+    {
+      "source": "/reject/:token",
+      "destination": "/api/reject/:token"
+    }
+  ],
   "functions": {
     "api/approve/[token].js": {
       "includeFiles": "../public/resume.pdf"

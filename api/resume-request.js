@@ -50,8 +50,9 @@ export default async function handler(req, res) {
 
   const requesterName = deriveNameFromEmail(email);
   const token = signApprovalToken(email);
-  const approveUrl = `${PUBLIC_URL}/approve/${token}`;
-  const rejectUrl = `${PUBLIC_URL}/reject/${token}`;
+  // Functions are mounted at /api/* on Vercel — links must include the /api prefix.
+  const approveUrl = `${PUBLIC_URL}/api/approve/${token}`;
+  const rejectUrl = `${PUBLIC_URL}/api/reject/${token}`;
 
   const who = requesterName
     ? `<strong>${requesterName.replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch])}</strong> (${email})`
