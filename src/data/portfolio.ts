@@ -493,7 +493,7 @@ export const education: EducationEntry[] = [
   },
   {
     degree: "Master of Computer Applications (MCA)",
-    college: "CMR Institute of Technology",
+    college: "CMR Institute of Technology (CMRIT)",
     university: "Visvesvaraya Technological University",
     location: "Bangalore, Karnataka",
     period: "Aug 2019 – Sep 2022",

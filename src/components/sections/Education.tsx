@@ -10,7 +10,9 @@ import {
   Crown,
   ExternalLink,
   Handshake,
+  Landmark,
   Lightbulb,
+  MapPin,
   Medal,
   Puzzle,
   Rocket,
@@ -65,22 +67,24 @@ function DegreeContent({ item }: { item: (typeof education)[number] }) {
         <Icon aria-hidden className="size-5" />
       </span>
       <h3 className="mt-4 text-2xl leading-tight font-bold tracking-tight sm:text-3xl">{item.degree}</h3>
-      <div className="mt-2 flex flex-col gap-1 text-xs font-medium text-white/80">
+      <div className="mt-2 grid gap-x-8 gap-y-1.5 text-xs font-medium text-white/80 sm:grid-cols-2 sm:text-sm">
         <p className="flex items-center gap-1.5">
-          <Building2 aria-hidden className="size-3.5" />
+          <Building2 aria-hidden className="size-3.5 shrink-0 text-white/70" />
           <span className="text-white/60">College:</span>
           <span>{item.college}</span>
         </p>
-        <p>
-          <span className="text-white/60">University:</span> {item.university}
+        <p className="flex items-center gap-1.5">
+          <Landmark aria-hidden className="size-3.5 shrink-0 text-white/70" />
+          <span className="text-white/60">University:</span>
+          <span>{item.university}</span>
         </p>
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <span>{item.location}</span>
-          <span aria-hidden>•</span>
-          <span className="inline-flex items-center gap-1.5">
-            <Calendar aria-hidden className="size-3.5" />
-            <time>{item.period}</time>
-          </span>
+        <p className="flex items-center gap-1.5">
+          <MapPin aria-hidden className="size-3.5 shrink-0 text-white/70" />
+          {item.location}
+        </p>
+        <p className="flex items-center gap-1.5">
+          <Calendar aria-hidden className="size-3.5 shrink-0 text-white/70" />
+          <time>{item.period}</time>
         </p>
       </div>
       <ul className="mt-4 grid gap-x-6 gap-y-2 border-t border-white/20 pt-4 sm:grid-cols-2">

@@ -49,7 +49,7 @@ export function Footer() {
           />
         </div>
 
-        <nav aria-label="Footer" className="border-y border-line py-5">
+        <nav aria-label="Footer" className="py-5">
           <ul className="flex flex-wrap justify-center gap-x-2 gap-y-1">
             {footerNav.map((item) => (
               <li key={item.id}>
