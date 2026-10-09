@@ -5,6 +5,7 @@ import { SocialLinks } from "@/components/ui/SocialLinks";
 import { profile } from "@/data/portfolio";
 import { fadeUp, stagger } from "@/lib/motion";
 import { IdCard } from "./IdCard";
+import { SkyScene } from "./SkyScene";
 import { TechMarquee } from "./TechMarquee";
 
 export function Hero() {
@@ -17,6 +18,7 @@ export function Hero() {
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
         <div className="bg-gradient-accent absolute top-24 -left-40 size-[28rem] rounded-full opacity-15 blur-3xl dark:opacity-10" />
         <div className="bg-gradient-accent absolute -right-32 bottom-24 size-[24rem] rounded-full opacity-10 blur-3xl" />
+        <SkyScene />
       </div>
 
       <div className="mx-auto grid w-full max-w-5xl flex-1 items-center gap-14 px-5 pb-10 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:gap-8">
@@ -34,7 +36,7 @@ export function Hero() {
             </motion.p>
           )}
 
-          <h1 id="hero-title" className="text-5xl leading-[1.05] font-bold tracking-tight sm:text-6xl md:text-7xl">
+          <h1 id="hero-title" data-sky-clear className="text-5xl leading-[1.05] font-bold tracking-tight sm:text-6xl md:text-7xl">
             <motion.span variants={fadeUp} className="block">
               Hi, I&apos;m
             </motion.span>
@@ -43,7 +45,7 @@ export function Hero() {
             </motion.span>
           </h1>
 
-          <motion.p variants={fadeUp} className="mt-5 max-w-md text-lg leading-relaxed text-fg-muted text-pretty">
+          <motion.p variants={fadeUp} data-sky-clear className="mt-5 max-w-md text-lg leading-relaxed text-fg-muted text-pretty">
             {profile.tagline}
           </motion.p>
 

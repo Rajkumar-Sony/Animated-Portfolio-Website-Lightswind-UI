@@ -33,6 +33,7 @@
   --danger: #b91c1c;
   --focus: #6366f1;
   --dot: rgb(0 0 0 / 0.06);
+  --skin: #e2a983;
   --metal-1: #a3a9b1;
   --metal-2: #4a4f57;
   --metal-3: #121417;
@@ -104,6 +105,7 @@
   --color-success-soft: var(--success-soft);
   --color-danger: var(--danger);
   --color-focus: var(--focus);
+  --color-skin: var(--skin);
 
   --text-2xs: 11px;
   --text-2xs--line-height: 16px;
@@ -124,6 +126,47 @@
   --animate-ping-slow: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 
   --animate-speedline: speedline 0.5s linear infinite;
+  --animate-beacon: beacon 1.3s linear infinite;
+  --animate-strobe: strobe 1.7s linear infinite;
+  --animate-rotor: rotor 0.16s linear infinite;
+  --animate-tail-rotor: tail-rotor 0.22s linear infinite;
+  /* Side-on, a spinning blade reads as a bar that shortens and lengthens. */
+  @keyframes rotor {
+    0%,
+    100% {
+      transform: scaleX(1);
+    }
+    50% {
+      transform: scaleX(0.1);
+    }
+  }
+  @keyframes tail-rotor {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes beacon {
+    0%,
+    12% {
+      opacity: 1;
+    }
+    20%,
+    100% {
+      opacity: 0.15;
+    }
+  }
+  @keyframes strobe {
+    0%,
+    6%,
+    13%,
+    100% {
+      opacity: 0;
+    }
+    3%,
+    10% {
+      opacity: 1;
+    }
+  }
   --animate-meteor: meteor var(--meteor-duration, 5s) linear var(--meteor-delay, 0s) infinite;
   --animate-metal-shine: metal-shine 7s ease-in-out 1s infinite;
   @keyframes metal-shine {

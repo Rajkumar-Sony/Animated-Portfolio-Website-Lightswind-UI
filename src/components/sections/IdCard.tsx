@@ -92,7 +92,7 @@ export function IdCard() {
   const flip = () => setFlipped((value) => !value);
 
   return (
-    <div className="flex flex-col items-center">
+    <div data-sky-avoid className="flex flex-col items-center">
       <motion.div
         className="relative"
         style={{ width: CARD_WIDTH, maxWidth: "calc(100vw - 2rem)", transformOrigin: "50% 0%" }}
