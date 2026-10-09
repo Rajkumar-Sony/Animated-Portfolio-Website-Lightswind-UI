@@ -47,6 +47,8 @@ export const profile = {
   email: "hello@scarlettrose.dev",
   phone: "+1 (234) 567-8900",
   location: "San Francisco, CA",
+  /** Used for the header weather when the visitor's location can't be determined. */
+  coordinates: { lat: 37.7749, lon: -122.4194 },
   website: "scarlettrose.dev",
   resumeUrl: "/resume.pdf",
   photo: pexels(5908778, 400),
