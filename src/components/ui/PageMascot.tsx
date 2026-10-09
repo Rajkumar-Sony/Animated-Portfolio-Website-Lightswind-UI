@@ -50,6 +50,7 @@ const REACTION_END = 820;
 const SQUASH_MS = 420;
 const DIRECTIONS_SHEET = "/mascots/raj-directions.png";
 const REACTIONS_SHEET = "/mascots/raj-reactions.png";
+const THINKING_REACTION_CELL = 4;
 
 const SQUASH: Keyframe[] = [
   { transform: "scale(1, 1)", easing: "ease-in" },
@@ -196,6 +197,8 @@ export function PageMascot({ className, size = 132 }: PageMascotProps) {
               ...layer,
               backgroundImage: `url(${REACTIONS_SHEET})`,
               ...cell(reactionCell ?? 0),
+              clipPath:
+                reactionCell === THINKING_REACTION_CELL ? "inset(0 0 0 14%)" : undefined,
               opacity: reactionCell === null ? 0 : 1,
             }}
           />
