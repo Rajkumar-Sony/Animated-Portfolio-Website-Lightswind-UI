@@ -1,6 +1,6 @@
 import { useEffect, useId, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, Wifi, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { BorderBeam } from "@/components/lightswind/border-beam";
 import { Monogram } from "@/components/ui/Monogram";
 import { headerNav, profile, type SectionId } from "@/data/portfolio";
@@ -12,6 +12,8 @@ import { ThemeToggle } from "./ThemeToggle";
 type HeaderProps = { active: SectionId };
 
 const clockFormat = new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit", hour12: false });
+// English to match the rest of the site, regardless of the visitor's locale.
+const dayFormat = new Intl.DateTimeFormat("en-US", { weekday: "short" });
 
 function useClock() {
   const [now, setNow] = useState(() => new Date());
@@ -90,12 +92,11 @@ export function Header({ active }: HeaderProps) {
 
           <div className="flex items-center gap-2 sm:gap-3">
             <ThemeToggle />
-            <Wifi aria-hidden className="hidden size-4 text-fg-muted sm:block" />
             <time
               dateTime={now.toISOString()}
               className="hidden text-sm font-medium tabular-nums sm:block"
             >
-              {clockFormat.format(now)}
+              {clockFormat.format(now)} <span className="text-fg-muted">{dayFormat.format(now)}</span>
             </time>
             <button
               type="button"
