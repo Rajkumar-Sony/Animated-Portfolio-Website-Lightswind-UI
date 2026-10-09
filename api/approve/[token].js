@@ -17,6 +17,7 @@ import {
   RESUME_PUBLIC_URL,
 } from "../_lib/config.mjs";
 import { RESUME_ATTACHMENT_FILENAME, buildApprovedResumeMail } from "../../server/resume-request-email.mjs";
+import { visitorEmailDeliverabilityError } from "../_lib/email-validation.mjs";
 
 export const maxDuration = 15;
 
@@ -55,6 +56,20 @@ export default async function handler(req, res) {
       res,
       404,
       page("Request not found", "This link may have expired or was already handled."),
+    );
+  }
+
+  const deliverabilityError = visitorEmailDeliverabilityError(email);
+  if (deliverabilityError) {
+    console.warn(`[approve] blocked send to undeliverable address ${email}`);
+    return html(
+      res,
+      400,
+      page(
+        "Cannot send resume",
+        "This request used an email address on a domain that cannot receive mail. Ask the visitor to submit again with a real inbox.",
+        "#b45309",
+      ),
     );
   }
 

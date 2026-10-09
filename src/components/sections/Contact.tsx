@@ -9,6 +9,7 @@ import { Section } from "@/components/ui/Section";
 import { contact, profile } from "@/data/portfolio";
 import { cn } from "@/lib/cn";
 import { fadeUp, stagger } from "@/lib/motion";
+import { visitorEmailDeliverabilityError } from "@/lib/emailDeliverability";
 
 type Fields = { name: string; email: string; message: string };
 type Errors = Partial<Record<keyof Fields, string>>;
@@ -22,6 +23,10 @@ function validate(fields: Fields): Errors {
   const errors: Errors = {};
   if (fields.name.trim().length < 2) errors.name = "Please enter your name.";
   if (!EMAIL_PATTERN.test(fields.email.trim())) errors.email = "Please enter a valid email address.";
+  else {
+    const deliverability = visitorEmailDeliverabilityError(fields.email.trim());
+    if (deliverability) errors.email = deliverability;
+  }
   if (fields.message.trim().length < 10) errors.message = "Please write at least 10 characters.";
   return errors;
 }

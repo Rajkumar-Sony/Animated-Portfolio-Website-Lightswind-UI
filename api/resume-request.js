@@ -17,6 +17,7 @@ import {
 } from "./_lib/config.mjs";
 import { signApprovalToken } from "./_lib/tokens.mjs";
 import { deriveNameFromEmail } from "../server/derive-name-from-email.mjs";
+import { visitorEmailDeliverabilityError } from "./_lib/email-validation.mjs";
 
 export const maxDuration = 15;
 
@@ -42,6 +43,10 @@ export default async function handler(req, res) {
   email = String(email).trim().toLowerCase();
   if (!EMAIL_PATTERN.test(email)) {
     return json(res, 422, { ok: false, error: "Please provide a valid email address." }, req.headers.origin);
+  }
+  const deliverabilityError = visitorEmailDeliverabilityError(email);
+  if (deliverabilityError) {
+    return json(res, 422, { ok: false, error: deliverabilityError }, req.headers.origin);
   }
   if (!TOKENS_ENABLED) {
     console.error("[resume-request] APPROVAL_TOKEN_SECRET is missing — cannot mint approval links");

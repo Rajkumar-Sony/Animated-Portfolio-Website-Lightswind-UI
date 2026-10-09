@@ -9,6 +9,7 @@ import { readBody, json } from "./_lib/http.mjs";
 import { sendMail } from "./_lib/mailer.mjs";
 import { ZOHO_USER, ZOHO_PASSWORD, OWNER_EMAIL, MOCK, EMAIL_PATTERN } from "./_lib/config.mjs";
 import { buildContactThanksMail, buildOwnerContactMail } from "../server/contact-email.mjs";
+import { visitorEmailDeliverabilityError } from "./_lib/email-validation.mjs";
 
 export const maxDuration = 15;
 
@@ -39,6 +40,8 @@ export default async function handler(req, res) {
   if (name.length < 2) return json(res, 422, { ok: false, error: "Please provide your name." }, req.headers.origin);
   if (!EMAIL_PATTERN.test(email))
     return json(res, 422, { ok: false, error: "Please provide a valid email address." }, req.headers.origin);
+  const deliverabilityError = visitorEmailDeliverabilityError(email);
+  if (deliverabilityError) return json(res, 422, { ok: false, error: deliverabilityError }, req.headers.origin);
   if (message.length < 10)
     return json(res, 422, { ok: false, error: "Please write a message of at least 10 characters." }, req.headers.origin);
 

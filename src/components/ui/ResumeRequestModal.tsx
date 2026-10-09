@@ -5,6 +5,7 @@ import { AnimatedArrowButtonContent } from "@/components/ui/AnimatedArrowButtonC
 import { Button } from "@/components/ui/Button";
 import { profile } from "@/data/portfolio";
 import { cn } from "@/lib/cn";
+import { visitorEmailDeliverabilityError } from "@/lib/emailDeliverability";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -99,6 +100,13 @@ export function ResumeRequestModal({ open, onClose }: ResumeRequestModalProps) {
     if (!EMAIL_PATTERN.test(value)) {
       setTouched(true);
       setError("Please enter a valid email address.");
+      inputRef.current?.focus();
+      return;
+    }
+    const deliverability = visitorEmailDeliverabilityError(value);
+    if (deliverability) {
+      setTouched(true);
+      setError(deliverability);
       inputRef.current?.focus();
       return;
     }
