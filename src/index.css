@@ -34,19 +34,79 @@
   --focus: #6366f1;
   --dot: rgb(0 0 0 / 0.06);
   --skin: #e2a983;
-  /* Footer footage tint: the light accents in both themes, so the landscape looks the same either way. */
-  --scene-tint-from: #8b5cf6;
-  --scene-tint-via: #6d7ff5;
-  --scene-tint-to: #3b9cf6;
-  /* Footer sunset, layered over the footage in the dark theme only. */
-  --dusk-high: #1d2440;
-  --dusk-mid: #5d6283;
-  --dusk-horizon: #f3d2a8;
-  --dusk-land: #a8968a;
-  --dusk-ground: #6e6672;
-  --sunset-glow: #ffc46b;
-  --sunset-ember: #f2994a;
-  --sun: #fff4d6;
+  /* Footer landscape: a clear day under the light theme's violet–blue sky, lit by a high sun on the right. */
+  --land-sky-top: #a6c4f6;
+  --land-sky-mid: #cfdcfa;
+  --land-sky-low: #e6e6fc;
+  --land-sky-horizon: #f6f4fe;
+  --land-glow: rgb(255 252 240 / 0.95);
+  --land-sunlight: rgb(255 251 236 / 0.3);
+  /* Clouds keep their natural white in both themes. */
+  --land-cloud-top: #ffffff;
+  --land-cloud-bottom: #d3dae4;
+  --land-cloud-lit: #ffffff;
+  --land-cloud-shade: #b8c2d0;
+  --land-snow: #ffffff;
+  --land-snow-shade: #d6d9f4;
+  --land-peak: #a7b0e2;
+  --land-peak-shade: #8890cf;
+  --land-range: #c3c8ef;
+  --land-haze: #eeeefc;
+  --land-hill-1: #b5dbd5;
+  --land-hill-1-rim: #daf0ec;
+  --land-hill-2: #93cbbd;
+  --land-hill-2-rim: #bce3d8;
+  --land-hill-3: #74b9a5;
+  --land-hill-3-rim: #9fd5c4;
+  --land-slope-top: #5fab95;
+  --land-slope-bottom: #438d7b;
+  --land-slope-rim: #95d7c2;
+  /* Trees keep their natural greens in both themes, paler and bluer with distance. */
+  --land-forest-1: #6b9781;
+  --land-forest-1-lit: #8ab39b;
+  --land-forest-1-shade: #58826e;
+  --land-forest-2: #3f7349;
+  --land-forest-2-lit: #5f9a5d;
+  --land-forest-2-shade: #315c3a;
+  --land-tree: #2f5f38;
+  --land-tree-lit: #4f8f4c;
+  --land-tree-shade: #22462a;
+  /* Tree bark and firewood keep their natural brown in both themes. */
+  --land-trunk: #7a5234;
+  --land-log: #8b5d3b;
+  --land-mist: #ffffff;
+  --land-river-far: #cddcfb;
+  --land-river-near: #7ca6f1;
+  --land-ripple: #ffffff;
+  --land-bank: #c6e7dd;
+  --land-grass: #3b8571;
+  --land-grass-mid: #5ea793;
+  --land-grass-lit: #a2dcc8;
+  --land-rock: #a5acd2;
+  --land-rock-lit: #d3d6f0;
+  --land-flower-1: #ffffff;
+  --land-flower-2: #b9a1fa;
+  --land-flower-3: #8fc3fb;
+  /* Animals keep their natural colours in both themes. */
+  --land-deer: #9c6b43;
+  --land-deer-far: #7a5232;
+  --land-deer-belly: #efe2cf;
+  --land-deer-dark: #2a1d14;
+  --land-antler: #cbb08a;
+  --land-monarch: #e9862a;
+  --land-swallowtail: #f2cf4a;
+  --land-wing-edge: #2b1d14;
+  /* Birds keep their natural plumage in both themes: a bald eagle and small dark songbirds. */
+  --land-bird: #3b3431;
+  --land-eagle-body: #3d2a1e;
+  --land-eagle-wing: #5a3d29;
+  --land-eagle-covert: #7b5639;
+  --land-eagle-primary: #24180f;
+  --land-eagle-far: #2f2017;
+  --land-eagle-white: #f5f1e8;
+  --land-eagle-beak: #f0b232;
+  --land-fire-glow: rgb(255 170 90 / 0.3);
+  --land-firefly: #fde047;
   --metal-1: #a3a9b1;
   --metal-2: #4a4f57;
   --metal-3: #121417;
@@ -98,8 +158,49 @@
   --metal-glint: rgb(255 255 255 / 0.95);
   --metal-relief: drop-shadow(0 2px 0 rgb(0 0 0 / 0.85)) drop-shadow(0 10px 18px rgb(0 0 0 / 0.7));
   --signature-glint: rgb(255 255 255 / 0.9);
-  --signature-fill-top: rgb(255 255 255 / 0.92);
-  --signature-fill-bottom: rgb(255 255 255 / 0.18);
+  --signature-fill-top: rgb(236 253 248 / 0.9);
+  --signature-fill-bottom: var(--surface-raised);
+  /* Footer landscape: sunset in the dark theme's black, cyan, mint and yellow; the sun sinks behind the far range on the right and rim-lights the crests. */
+  --land-sky-top: var(--surface-raised);
+  --land-sky-mid: #07202a;
+  --land-sky-low: #1f6b70;
+  --land-sky-horizon: #e7dc8c;
+  --land-glow: rgb(253 230 138 / 0.85);
+  --land-sunlight: rgb(253 224 71 / 0.12);
+  --land-snow: #c7efe2;
+  --land-snow-shade: #355a62;
+  --land-peak: #15313b;
+  --land-peak-shade: #0a1c24;
+  --land-range: #1b3e47;
+  --land-haze: #3d978f;
+  --land-hill-1: #11303a;
+  --land-hill-1-rim: #f0df87;
+  --land-hill-2: #0c2630;
+  --land-hill-2-rim: #8de2c3;
+  --land-hill-3: #081d26;
+  --land-hill-3-rim: #3aa5b4;
+  --land-slope-top: #05131a;
+  --land-slope-bottom: #000000;
+  --land-slope-rim: #1a6872;
+  --land-mist: #4fb3a3;
+  --land-river-far: #eedc80;
+  --land-river-near: #082a35;
+  --land-ripple: #fde68a;
+  --land-bank: #0e3a42;
+  --land-grass: #03101a;
+  --land-grass-mid: #0c3540;
+  --land-grass-lit: #1f6e69;
+  --land-rock: #12303a;
+  --land-rock-lit: #3e8180;
+  --land-flower-1: #67e8f9;
+  --land-flower-2: #fde047;
+  --land-flower-3: #6ee7b7;
+  --land-fire-glow: rgb(253 186 71 / 0.55);
+  --land-firefly: #d9f99d;
+  /* The setting sun in the accents' yellow, its halo fringed with mint. */
+  --sunset-glow: #fde68a;
+  --sunset-ember: #5eead4;
+  --sun: #fffbe6;
 }
 
 @theme inline {
@@ -236,6 +337,272 @@
       opacity: 0;
     }
   }
+
+  /* Footer landscape. Lengths are SVG user units in the landscape's 1600×900 frame. */
+  --animate-cloud-pass: cloud-pass var(--cloud-duration, 300s) linear var(--cloud-delay, 0s) infinite;
+  --animate-mist-drift: mist-drift var(--mist-duration, 30s) ease-in-out var(--mist-delay, 0s) infinite alternate;
+  --animate-wind: wind 7s ease-in-out var(--wind-delay, 0s) infinite;
+  --animate-glint: glint var(--glint-duration, 4s) ease-in-out var(--glint-delay, 0s) infinite;
+  --animate-wing-beat: wing-beat 6s ease-in-out infinite;
+  --animate-flap: flap 0.42s ease-in-out infinite;
+  --animate-butterfly: butterfly 0.22s ease-in-out infinite;
+  --animate-graze: graze 14s ease-in-out infinite;
+  --animate-tail-flick: tail-flick 5s ease-in-out infinite;
+  --animate-flame-a: flame-a 0.7s ease-in-out infinite;
+  --animate-flame-b: flame-b 0.95s ease-in-out infinite;
+  --animate-fire-glow: fire-glow 2.3s ease-in-out infinite;
+  --animate-smoke: smoke 5.6s ease-out var(--smoke-delay, 0s) infinite;
+  --animate-ember: ember 2.2s ease-out var(--ember-delay, 0s) infinite;
+  --animate-rays: rays 10s ease-in-out infinite;
+  --animate-twinkle: twinkle var(--twinkle-duration, 4s) ease-in-out var(--twinkle-delay, 0s) infinite;
+  --animate-shooting-star: shooting-star 11s ease-in 4s infinite;
+  --animate-firefly: firefly var(--firefly-duration, 3s) ease-in-out var(--firefly-delay, 0s) infinite;
+  @keyframes cloud-pass {
+    to {
+      transform: translateX(2300px);
+    }
+  }
+  @keyframes mist-drift {
+    from {
+      transform: translateX(-36px);
+      opacity: 0.75;
+    }
+    to {
+      transform: translateX(36px);
+      opacity: 1;
+    }
+  }
+  /* A gust: a lean, a partial recovery, a stronger lean, then settling. --bend scales it per blade or tree. */
+  @keyframes wind {
+    0%,
+    100% {
+      transform: skewX(calc(var(--bend, 1) * -2deg));
+    }
+    18% {
+      transform: skewX(calc(var(--bend, 1) * 9deg));
+    }
+    30% {
+      transform: skewX(calc(var(--bend, 1) * 4deg));
+    }
+    42% {
+      transform: skewX(calc(var(--bend, 1) * 11deg));
+    }
+    60% {
+      transform: skewX(calc(var(--bend, 1) * 1deg));
+    }
+    80% {
+      transform: skewX(calc(var(--bend, 1) * 3deg));
+    }
+  }
+  @keyframes glint {
+    0%,
+    100% {
+      opacity: 0;
+    }
+    40% {
+      opacity: 0.9;
+    }
+    60% {
+      opacity: 0.2;
+    }
+    75% {
+      opacity: 0.8;
+    }
+  }
+  /*
+   * Seen side-on, the wing swings about the shoulder: 0 is the raised upstroke, −100° the bottom of the downstroke.
+   * A few deep beats, then a long glide with the wings swept back and flexing slightly.
+   */
+  @keyframes wing-beat {
+    0%,
+    35%,
+    100% {
+      transform: rotate(-30deg);
+    }
+    4%,
+    14%,
+    24% {
+      transform: rotate(5deg);
+    }
+    9%,
+    19% {
+      transform: rotate(-100deg);
+    }
+    29% {
+      transform: rotate(-95deg);
+    }
+    60% {
+      transform: rotate(-26deg);
+    }
+    80% {
+      transform: rotate(-34deg);
+    }
+  }
+  @keyframes flap {
+    50% {
+      transform: rotate(-105deg);
+    }
+  }
+  @keyframes butterfly {
+    50% {
+      transform: scaleX(0.15);
+    }
+  }
+  /* Head down to graze, a few nibbles, back up, a glance around. */
+  @keyframes graze {
+    0%,
+    28%,
+    84%,
+    100% {
+      transform: rotate(0);
+    }
+    36%,
+    48%,
+    60% {
+      transform: rotate(-96deg);
+    }
+    42%,
+    54% {
+      transform: rotate(-91deg);
+    }
+    70% {
+      transform: rotate(0);
+    }
+    76% {
+      transform: rotate(6deg);
+    }
+  }
+  @keyframes tail-flick {
+    0%,
+    70%,
+    86%,
+    100% {
+      transform: rotate(0);
+    }
+    74% {
+      transform: rotate(-25deg);
+    }
+    78% {
+      transform: rotate(10deg);
+    }
+    82% {
+      transform: rotate(-20deg);
+    }
+  }
+  @keyframes flame-a {
+    0%,
+    100% {
+      transform: scale(1, 1) skewX(0);
+    }
+    25% {
+      transform: scale(0.9, 1.12) skewX(-4deg);
+    }
+    50% {
+      transform: scale(1.05, 0.92) skewX(3deg);
+    }
+    75% {
+      transform: scale(0.95, 1.06) skewX(-2deg);
+    }
+  }
+  @keyframes flame-b {
+    0%,
+    100% {
+      transform: scale(1, 1) skewX(2deg);
+    }
+    33% {
+      transform: scale(1.08, 0.9) skewX(-3deg);
+    }
+    66% {
+      transform: scale(0.92, 1.14) skewX(4deg);
+    }
+  }
+  @keyframes fire-glow {
+    0%,
+    100% {
+      opacity: 0.8;
+    }
+    30% {
+      opacity: 1;
+    }
+    55% {
+      opacity: 0.7;
+    }
+    80% {
+      opacity: 0.95;
+    }
+  }
+  /* Smoke rises, swells and drifts downwind as it thins. */
+  @keyframes smoke {
+    0% {
+      transform: translate(0, 0) scale(0.4);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.55;
+    }
+    100% {
+      transform: translate(26px, -90px) scale(2.4);
+      opacity: 0;
+    }
+  }
+  @keyframes ember {
+    0% {
+      transform: translate(0, 0);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    100% {
+      transform: translate(var(--ember-drift, 6px), -46px);
+      opacity: 0;
+    }
+  }
+  @keyframes rays {
+    0%,
+    100% {
+      opacity: 0.55;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 0.9;
+    }
+    50% {
+      opacity: 0.2;
+    }
+  }
+  @keyframes shooting-star {
+    0% {
+      transform: translateX(0);
+      opacity: 0;
+    }
+    1% {
+      opacity: 1;
+    }
+    6%,
+    100% {
+      transform: translateX(-320px);
+      opacity: 0;
+    }
+  }
+  @keyframes firefly {
+    0%,
+    100% {
+      opacity: 0.1;
+    }
+    30%,
+    70% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
 }
 
 @layer base {
@@ -350,38 +717,7 @@
   );
 }
 
-@utility bg-scene-tint {
-  background-image: linear-gradient(
-    120deg,
-    var(--scene-tint-from),
-    var(--scene-tint-via),
-    var(--scene-tint-to)
-  );
-}
-
-/* Dusk falling over the scene, multiplied over the footage: deepest overhead, warm at the horizon (--sun-y), dimmed land below. */
-@utility bg-dusk-sky {
-  background-image: linear-gradient(
-    to bottom,
-    var(--dusk-high) 0%,
-    var(--dusk-mid) calc(var(--sun-y) * 0.6),
-    var(--dusk-horizon) var(--sun-y),
-    var(--dusk-land) calc(var(--sun-y) + 10%),
-    var(--dusk-ground) 100%
-  );
-}
-
-/* Warm light around the setting sun at --sun-x / --sun-y, blended into the footage. */
-@utility bg-sunset-wash {
-  background-image: radial-gradient(
-    ellipse 50% 70% at var(--sun-x) var(--sun-y),
-    var(--sunset-glow),
-    color-mix(in oklab, var(--sunset-ember) 45%, transparent) 40%,
-    transparent 75%
-  );
-}
-
-/* Warm light the sun throws up into the dark footer above the footage. */
+/* Warm light the sun throws up into the dark footer above the landscape. */
 @utility bg-sunset-afterglow {
   background-image: radial-gradient(
     ellipse 50% 60% at var(--sun-x) var(--sun-y),
@@ -397,6 +733,22 @@
     color-mix(in oklab, var(--sunset-glow) 45%, transparent) 0%,
     color-mix(in oklab, var(--sunset-ember) 16%, transparent) 25%,
     transparent 65%
+  );
+}
+
+/* Eased in from the top so the scene has no visible starting edge; linear out at the bottom. */
+@utility mask-scene {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(0 0 0 / 0.03) calc(var(--fade-top) * 0.2),
+    rgb(0 0 0 / 0.14) calc(var(--fade-top) * 0.38),
+    rgb(0 0 0 / 0.38) calc(var(--fade-top) * 0.56),
+    rgb(0 0 0 / 0.68) calc(var(--fade-top) * 0.74),
+    rgb(0 0 0 / 0.9) calc(var(--fade-top) * 0.88),
+    #000 var(--fade-top),
+    #000 calc(100% - var(--fade-bottom)),
+    rgb(0 0 0 / var(--fade-floor, 0))
   );
 }
 

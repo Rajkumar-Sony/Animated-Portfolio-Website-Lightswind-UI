@@ -80,7 +80,7 @@ export function Footer() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
-          className="text-mist -mb-[0.1em] block animate-metal-shine pt-[0.15em] text-center font-display leading-none font-normal tracking-[0.01em] whitespace-nowrap select-none motion-reduce:animate-none"
+          className="text-mist -mb-[0.1em] block animate-metal-shine pt-[0.15em] text-center font-display leading-none font-normal tracking-[0.01em] whitespace-nowrap select-none mask-b-from-20% motion-reduce:animate-none"
           style={{ fontSize: `calc(94cqw / ${signatureWidthEm})` }}
         >
           {footer.signature}
