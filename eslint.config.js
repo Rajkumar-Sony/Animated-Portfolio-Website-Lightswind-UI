@@ -6,7 +6,8 @@ import tseslint from 'typescript-eslint'
 import { globalIgnores } from 'eslint/config'
  
 export default tseslint.config([
-  globalIgnores(['dist']),
+  // Vendored Lightswind UI sources are kept as published upstream.
+  globalIgnores(['dist', 'src/components/lightswind', 'src/components/lib']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

@@ -1,12 +1,37 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
-  <head >
+<html lang="en">
+  <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
-  </head> 
+    <title>Scarlett Rose — Director of Product Engineering</title>
+    <meta
+      name="description"
+      content="Portfolio of Scarlett Rose, a full-stack engineer and UI/UX architect building accessible, high-performance web products."
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Scarlett Rose — Director of Product Engineering" />
+    <meta
+      property="og:description"
+      content="Full-stack engineering, UI/UX architecture and design systems. Built with Lightswind UI."
+    />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://images.pexels.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.simpleicons.org" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          var dark = stored ? stored === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+          if (dark) document.documentElement.classList.add("dark");
+        } catch (e) {}
+      })();
+    </script>
+  </head>
   <body>
+    <noscript>This portfolio needs JavaScript for its interactive sections.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
