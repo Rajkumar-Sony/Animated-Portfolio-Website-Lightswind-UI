@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { SectionDock } from "@/components/layout/SectionDock";
 import { About } from "@/components/sections/About";
+import { BuiltProjects } from "@/components/sections/BuiltProjects";
 import { Career } from "@/components/sections/Career";
 import { Contact } from "@/components/sections/Contact";
 import { Education } from "@/components/sections/Education";
@@ -21,6 +22,7 @@ const SECTION_IDS: readonly SectionId[] = [
   "about",
   "services",
   "projects",
+  "built-projects",
   "career",
   "education",
   "faq",
@@ -57,6 +59,7 @@ export default function App() {
           <About />
           <Services />
           <Projects />
+          <BuiltProjects />
           <Career />
           <Education />
           <Faq />

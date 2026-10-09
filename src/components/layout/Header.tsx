@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { BorderBeam } from "@/components/lightswind/border-beam";
 import { Monogram } from "@/components/ui/Monogram";
-import { headerNav, profile, type SectionId } from "@/data/portfolio";
+import { headerNav, mobileNav, profile, type SectionId } from "@/data/portfolio";
 import { useScrollState } from "@/hooks/useScrollState";
 import { cn } from "@/lib/cn";
 import { duration, easeOut } from "@/lib/motion";
@@ -128,7 +128,7 @@ export function Header({ active }: HeaderProps) {
               className="overflow-hidden md:hidden"
             >
               <ul className="grid gap-1 border-t border-fg/10 p-3 sm:grid-cols-2">
-                {headerNav.map((item) => (
+                {mobileNav.map((item) => (
                   <li key={item.id}>
                     <a
                       href={`#${item.id}`}

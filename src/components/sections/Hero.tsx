@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Download } from "lucide-react";
 import { buttonStyles } from "@/lib/buttonStyles";
+import { AnimatedArrowButtonContent } from "@/components/ui/AnimatedArrowButtonContent";
+import { HeroBrandUnderline } from "@/components/ui/HeroBrandUnderline";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { profile } from "@/data/portfolio";
 import { fadeUp, stagger } from "@/lib/motion";
@@ -21,7 +23,7 @@ export function Hero() {
         <SkyScene />
       </div>
 
-      <div className="mx-auto grid w-full max-w-5xl flex-1 items-center gap-14 px-5 pb-10 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:gap-8">
+      <div className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-20 px-5 pb-10 sm:px-6 md:gap-24 lg:grid-cols-[minmax(0,1.1fr)_minmax(22rem,0.9fr)] lg:gap-20 xl:gap-28">
         <motion.div variants={stagger(0.1, 0.15)} initial="hidden" animate="visible" className="flex flex-col items-start">
           {profile.available && (
             <motion.p
@@ -45,14 +47,17 @@ export function Hero() {
             </motion.span>
           </h1>
 
-          <motion.p variants={fadeUp} data-sky-clear className="mt-5 max-w-md text-lg leading-relaxed text-fg-muted text-pretty">
+          <motion.div variants={fadeUp} data-sky-clear className="w-full">
+            <HeroBrandUnderline />
+          </motion.div>
+
+          <motion.p variants={fadeUp} data-sky-clear className="mt-3 max-w-md text-lg leading-relaxed text-fg-muted text-pretty">
             {profile.tagline}
           </motion.p>
 
           <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center gap-3">
             <a href="#projects" className={buttonStyles("primary", "group")}>
-              View Work
-              <ArrowRight aria-hidden className="size-4 transition-transform duration-150 group-hover:translate-x-0.5" />
+              <AnimatedArrowButtonContent icon={ArrowRight}>View Work</AnimatedArrowButtonContent>
             </a>
             <a href={profile.resumeUrl} download className={buttonStyles("secondary")}>
               Resume
@@ -69,7 +74,7 @@ export function Hero() {
           initial={{ opacity: 0, y: -40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", stiffness: 70, damping: 12, delay: 0.35 }}
-          className="flex justify-center lg:justify-end"
+          className="flex justify-center lg:justify-end lg:pl-4 xl:pl-8"
         >
           <IdCard />
         </motion.div>

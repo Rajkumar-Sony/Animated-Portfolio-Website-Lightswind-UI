@@ -2,6 +2,8 @@ import { useId, useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CircleCheck, Loader2, Mail, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { AnimatedArrowButtonContent } from "@/components/ui/AnimatedArrowButtonContent";
+import WorldMap, { DEFAULT_ARCS, DEFAULT_MARKERS } from "@/components/lightswind/world-map";
 import { Section } from "@/components/ui/Section";
 import { contact, profile } from "@/data/portfolio";
 import { cn } from "@/lib/cn";
@@ -130,6 +132,17 @@ export function Contact() {
               );
             })}
           </ul>
+          <div className="relative mt-2 hidden aspect-[2/1] w-full overflow-visible lg:block">
+            <WorldMap
+              role="img"
+              aria-label="World map showing a route from Bihar, India to Osaka, Japan"
+              markers={DEFAULT_MARKERS}
+              arcs={DEFAULT_ARCS}
+              pulse={true}
+              markerColor="#3B82F6"
+              enableTooltips={true}
+            />
+          </div>
         </motion.div>
 
         <motion.form
@@ -184,9 +197,7 @@ export function Contact() {
                 <Loader2 aria-hidden className="size-4 animate-spin" /> Opening your email app…
               </>
             ) : (
-              <>
-                Send Message <Send aria-hidden className="size-4" />
-              </>
+              <AnimatedArrowButtonContent icon={Send}>Send Message</AnimatedArrowButtonContent>
             )}
           </Button>
 

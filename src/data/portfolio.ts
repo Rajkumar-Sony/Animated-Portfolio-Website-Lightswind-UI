@@ -38,6 +38,7 @@ export type SectionId =
   | "about"
   | "services"
   | "projects"
+  | "built-projects"
   | "career"
   | "education"
   | "faq"
@@ -89,11 +90,24 @@ export const headerNav: NavItem[] = [
   { id: "projects", label: "Projects", icon: FolderOpen },
 ];
 
+export const mobileNav: NavItem[] = [
+  { id: "hero", label: "Home", icon: House },
+  { id: "about", label: "About", icon: User },
+  { id: "services", label: "What I Do", icon: Server },
+  { id: "projects", label: "Projects", icon: FolderOpen },
+  { id: "built-projects", label: "Projects I Built", icon: CodeXml },
+  { id: "career", label: "Career", icon: Briefcase },
+  { id: "education", label: "Education", icon: GraduationCap },
+  { id: "faq", label: "FAQ", icon: MessageSquare },
+  { id: "contact", label: "Contact", icon: Send },
+];
+
 export const dockNav: NavItem[] = [
   { id: "hero", label: "Home", icon: House },
   { id: "about", label: "About", icon: User },
   { id: "career", label: "Career", icon: Briefcase },
   { id: "projects", label: "Projects", icon: FolderOpen },
+  { id: "built-projects", label: "Built", icon: CodeXml },
   { id: "education", label: "Education", icon: GraduationCap },
   { id: "faq", label: "FAQ", icon: MessageSquare },
   { id: "contact", label: "Contact", icon: Send },
@@ -104,6 +118,7 @@ export const footerNav: { id: SectionId; label: string }[] = [
   { id: "about", label: "About" },
   { id: "career", label: "Career" },
   { id: "projects", label: "Projects" },
+  { id: "built-projects", label: "Projects I Built" },
   { id: "education", label: "Education" },
   { id: "contact", label: "Contact" },
 ];
