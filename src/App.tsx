@@ -45,6 +45,12 @@ function useContentProtection() {
       if (!isEditableTarget(event.target)) event.preventDefault();
     };
 
+    // Block right-click everywhere (mouse and touchpad both emit `contextmenu`),
+    // except in editable fields so right-click → paste keeps working there.
+    const preventContextMenu = (event: MouseEvent) => {
+      if (!isEditableTarget(event.target)) event.preventDefault();
+    };
+
     const preventProtectedImageAction = (event: Event) => {
       if (
         event.target instanceof Element &&
@@ -57,13 +63,13 @@ function useContentProtection() {
     document.addEventListener("copy", preventCopy);
     document.addEventListener("cut", preventCopy);
     document.addEventListener("dragstart", preventProtectedImageAction);
-    document.addEventListener("contextmenu", preventProtectedImageAction);
+    document.addEventListener("contextmenu", preventContextMenu);
 
     return () => {
       document.removeEventListener("copy", preventCopy);
       document.removeEventListener("cut", preventCopy);
       document.removeEventListener("dragstart", preventProtectedImageAction);
-      document.removeEventListener("contextmenu", preventProtectedImageAction);
+      document.removeEventListener("contextmenu", preventContextMenu);
     };
   }, []);
 }
