@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/approve/[token].js": {
+      "includeFiles": "../public/resume.pdf"
+    },
+    "api/contact.js": {
+      "maxDuration": 15
+    },
+    "api/resume-request.js": {
+      "maxDuration": 15
+    },
+    "api/reject/[token].js": {
+      "maxDuration": 10
+    }
+  }
+}
