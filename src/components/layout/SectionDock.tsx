@@ -1,3 +1,4 @@
+import { useEffect, useRef, type RefObject } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { dockNav, type SectionId } from "@/data/portfolio";
 import { cn } from "@/lib/cn";
@@ -5,7 +6,43 @@ import { duration, easeOut } from "@/lib/motion";
 
 type SectionDockProps = { active: SectionId; visible: boolean };
 
+/** Matches `bottom-4` on the dock. */
+const DOCK_BOTTOM = 16;
+const BOUNDARY_GAP = 12;
+
+/**
+ * Lifts the dock so it rests above any `[data-dock-boundary]` element scrolling up from below.
+ * Written straight to the DOM: a motion value here would make the shared-layout pill lag a frame.
+ */
+function useBoundaryLift(ref: RefObject<HTMLElement | null>, mounted: boolean) {
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const boundary = document.querySelector<HTMLElement>("[data-dock-boundary]");
+      const dockBottom = window.innerHeight - DOCK_BOTTOM;
+      const limit = boundary ? boundary.getBoundingClientRect().top - BOUNDARY_GAP : dockBottom;
+      ref.current?.style.setProperty("translate", `0 ${-Math.max(0, dockBottom - limit)}px`);
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [ref, mounted]);
+}
+
 export function SectionDock({ active, visible }: SectionDockProps) {
+  const listRef = useRef<HTMLUListElement>(null);
+  useBoundaryLift(listRef, visible);
+
   return (
     <AnimatePresence>
       {visible && (
@@ -17,7 +54,10 @@ export function SectionDock({ active, visible }: SectionDockProps) {
           transition={{ duration: duration.normal, ease: easeOut }}
           className="fixed inset-x-0 bottom-4 z-40 flex justify-center px-3"
         >
-          <ul className="flex items-center gap-1 rounded-full border border-line bg-surface/85 p-1.5 shadow-lg backdrop-blur-xl">
+          <ul
+            ref={listRef}
+            className="flex items-center gap-1 rounded-full border border-line bg-surface/85 p-1.5 shadow-lg backdrop-blur-xl"
+          >
             {dockNav.map(({ id, label, icon: Icon }) => {
               const isActive = active === id;
               return (

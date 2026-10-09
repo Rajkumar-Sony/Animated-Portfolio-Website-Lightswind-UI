@@ -1,27 +1,27 @@
+import { motion } from "framer-motion";
 import { ArrowUp, Heart } from "lucide-react";
 import { buttonStyles } from "@/lib/buttonStyles";
 import GooeyText from "@/components/lightswind-pro/gooey-text";
 import Meteors from "@/components/lightswind-pro/meteors";
 import { Monogram } from "@/components/ui/Monogram";
-import { Reveal, RevealItem } from "@/components/ui/Reveal";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { footer, footerNav, profile } from "@/data/portfolio";
+import { fadeUp } from "@/lib/motion";
+import { FooterScene } from "./FooterScene";
 
-const edgeBlur =
-  "pointer-events-none absolute inset-y-0 z-0 w-[max(3rem,calc((100%-60rem)/2))] backdrop-blur-md";
+/** Width of the signature in Black Ops One at 0.01em tracking, in ems; sizes it to span the footer. */
+const signatureWidthEm = 8.55;
 
 export function Footer() {
   return (
-    <footer className="relative isolate mt-10 overflow-hidden rounded-t-2xl border-t border-line bg-surface-raised/80 pb-28 shadow-soft backdrop-blur-sm">
-      <Meteors number={20} speed={3} angle={-45} className="-z-10" />
-      <div
-        aria-hidden
-        className={`${edgeBlur} left-0 bg-linear-to-r from-surface/80 to-transparent [mask-image:linear-gradient(to_right,black_30%,transparent)]`}
+    <footer className="@container relative isolate mt-10 overflow-hidden rounded-t-2xl border-t border-line bg-surface-raised shadow-soft">
+      <Meteors
+        number={20}
+        speed={3}
+        angle={-45}
+        className="bottom-1/2 -z-10 [mask-image:linear-gradient(black_60%,transparent)]"
       />
-      <div
-        aria-hidden
-        className={`${edgeBlur} right-0 bg-linear-to-l from-surface/80 to-transparent [mask-image:linear-gradient(to_left,black_30%,transparent)]`}
-      />
+      <FooterScene className="-z-10" />
       <div className="relative mx-auto flex max-w-5xl flex-col gap-10 px-5 pt-12 sm:px-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -64,26 +64,27 @@ export function Footer() {
 
         <div className="flex flex-col-reverse items-center justify-between gap-4 sm:flex-row">
           <SocialLinks variant="pill" />
-          <p className="flex items-center gap-1.5 text-xs text-fg-muted">
+          <p className="flex items-center gap-1.5 text-xs font-medium text-fg">
             © {new Date().getFullYear()} {profile.name}. Crafted with
             <Heart aria-label="love" className="size-3.5 fill-rose-500 text-rose-500" />
             &amp; Lightswind UI
           </p>
         </div>
+      </div>
 
-        <div>
-          <p className="sr-only">{footer.signature}</p>
-          <Reveal className="flex justify-center">
-            <RevealItem>
-              <span
-                aria-hidden
-                className="text-metal block animate-metal-shine py-[0.15em] font-display text-[clamp(1.75rem,10.5vw,7rem)] leading-none font-bold tracking-[-0.03em] whitespace-nowrap select-none motion-reduce:animate-none"
-              >
-                {footer.signature}
-              </span>
-            </RevealItem>
-          </Reveal>
-        </div>
+      <div data-dock-boundary className="relative mt-24 sm:mt-28">
+        <p className="sr-only">{footer.signature}</p>
+        <motion.span
+          aria-hidden
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          className="text-mist -mb-[0.1em] block animate-metal-shine pt-[0.15em] text-center font-display leading-none font-normal tracking-[0.01em] whitespace-nowrap select-none motion-reduce:animate-none"
+          style={{ fontSize: `calc(94cqw / ${signatureWidthEm})` }}
+        >
+          {footer.signature}
+        </motion.span>
       </div>
     </footer>
   );
