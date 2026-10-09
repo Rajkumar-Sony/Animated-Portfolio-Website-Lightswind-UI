@@ -34,6 +34,19 @@
   --focus: #6366f1;
   --dot: rgb(0 0 0 / 0.06);
   --skin: #e2a983;
+  /* Footer footage tint: the light accents in both themes, so the landscape looks the same either way. */
+  --scene-tint-from: #8b5cf6;
+  --scene-tint-via: #6d7ff5;
+  --scene-tint-to: #3b9cf6;
+  /* Footer sunset, layered over the footage in the dark theme only. */
+  --dusk-high: #1d2440;
+  --dusk-mid: #5d6283;
+  --dusk-horizon: #f3d2a8;
+  --dusk-land: #a8968a;
+  --dusk-ground: #6e6672;
+  --sunset-glow: #ffc46b;
+  --sunset-ember: #f2994a;
+  --sun: #fff4d6;
   --metal-1: #a3a9b1;
   --metal-2: #4a4f57;
   --metal-3: #121417;
@@ -334,6 +347,56 @@
     var(--accent-from),
     var(--accent-via),
     var(--accent-to)
+  );
+}
+
+@utility bg-scene-tint {
+  background-image: linear-gradient(
+    120deg,
+    var(--scene-tint-from),
+    var(--scene-tint-via),
+    var(--scene-tint-to)
+  );
+}
+
+/* Dusk falling over the scene, multiplied over the footage: deepest overhead, warm at the horizon (--sun-y), dimmed land below. */
+@utility bg-dusk-sky {
+  background-image: linear-gradient(
+    to bottom,
+    var(--dusk-high) 0%,
+    var(--dusk-mid) calc(var(--sun-y) * 0.6),
+    var(--dusk-horizon) var(--sun-y),
+    var(--dusk-land) calc(var(--sun-y) + 10%),
+    var(--dusk-ground) 100%
+  );
+}
+
+/* Warm light around the setting sun at --sun-x / --sun-y, blended into the footage. */
+@utility bg-sunset-wash {
+  background-image: radial-gradient(
+    ellipse 50% 70% at var(--sun-x) var(--sun-y),
+    var(--sunset-glow),
+    color-mix(in oklab, var(--sunset-ember) 45%, transparent) 40%,
+    transparent 75%
+  );
+}
+
+/* Warm light the sun throws up into the dark footer above the footage. */
+@utility bg-sunset-afterglow {
+  background-image: radial-gradient(
+    ellipse 50% 60% at var(--sun-x) var(--sun-y),
+    color-mix(in oklab, var(--sunset-glow) 16%, transparent),
+    color-mix(in oklab, var(--sunset-ember) 6%, transparent) 45%,
+    transparent 75%
+  );
+}
+
+@utility bg-sun-halo {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--sunset-glow) 45%, transparent) 0%,
+    color-mix(in oklab, var(--sunset-ember) 16%, transparent) 25%,
+    transparent 65%
   );
 }
 
