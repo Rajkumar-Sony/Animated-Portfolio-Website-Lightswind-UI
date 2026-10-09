@@ -6,6 +6,7 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { sendMail } from "../_lib/mailer.mjs";
 import { html, json, page, escapeHtml } from "../_lib/http.mjs";
 import { verifyApprovalToken } from "../_lib/tokens.mjs";
@@ -19,22 +20,26 @@ import { RESUME_ATTACHMENT_FILENAME, buildApprovedResumeMail } from "../../serve
 
 export const maxDuration = 15;
 
-/** The resume PDF ships in public/; try the plausible bundle locations. */
+/** The resume PDF ships in public/; try the plausible bundle locations.
+ *  Runs as an ES module on Vercel (no __dirname) — derive it from import.meta.url.
+ *  Any failure here degrades to link-only email, never a 502. */
 function optionalLocalResumeAttachment() {
-  const candidates = [
-    path.join(process.cwd(), "public", "resume.pdf"),
-    path.join(__dirname, "..", "..", "public", "resume.pdf"),
-    path.join(__dirname, "..", "public", "resume.pdf"),
-  ];
-  for (const candidate of candidates) {
-    try {
+  try {
+    const here = path.dirname(fileURLToPath(import.meta.url));
+    const candidates = [
+      path.join(process.cwd(), "public", "resume.pdf"),
+      path.join(here, "..", "..", "public", "resume.pdf"),
+      path.join(here, "..", "public", "resume.pdf"),
+      path.join(here, "resume.pdf"),
+    ];
+    for (const candidate of candidates) {
       if (!existsSync(candidate)) continue;
       const content = readFileSync(candidate);
       if (content.length < 512 || content.slice(0, 4).toString() !== "%PDF") continue;
       return { filename: RESUME_ATTACHMENT_FILENAME, content, contentType: "application/pdf" };
-    } catch {
-      /* try next candidate */
     }
+  } catch (error) {
+    console.warn("[approve] resume.pdf unavailable, sending link-only:", error.message);
   }
   return null;
 }
@@ -89,7 +94,7 @@ export default async function handler(req, res) {
     return html(
       res,
       502,
-      page("Could not send email", "Check ZOHO_MAIL_APP_PASSWORD and try again from Zoho Mail settings."),
+      page("Could not send email", "Something went wrong while sending. Please try the link again; if it keeps failing, check the Vercel function logs."),
     );
   }
 }
