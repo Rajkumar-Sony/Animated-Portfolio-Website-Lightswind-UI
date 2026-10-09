@@ -54,7 +54,7 @@ export function CoolThemeToggle({ className, size = "md", weather }: CoolThemeTo
   };
 
   const currentSize = sizes[size];
-  const track = "rounded-full ring-1 ring-line-strong ring-inset";
+  const track = "rounded-full ring-1 ring-line ring-inset";
   const width = weather ? currentSize.wide : currentSize.button;
 
   if (!mounted) return <div className={cn("inline-flex", track, width)} />;
@@ -108,7 +108,10 @@ export function CoolThemeToggle({ className, size = "md", weather }: CoolThemeTo
 
       <motion.div
         transition={{ type: "spring", stiffness: 500, damping: 30 }}
-        className={cn("relative z-10 flex items-center justify-center rounded-full ring-1 ring-line-strong", currentSize.thumb)}
+        className={cn(
+          "relative z-10 flex items-center justify-center rounded-full bg-surface-raised shadow-[0_1px_3px_rgb(0_0_0/0.18),0_0_0_0.5px_rgb(0_0_0/0.08)] dark:bg-line-strong dark:shadow-[inset_0_1px_0_rgb(255_255_255/0.08),0_1px_3px_rgb(0_0_0/0.6)]",
+          currentSize.thumb,
+        )}
         animate={{ x: dark ? (weather ? currentSize.wideTravel : currentSize.travel) : 0 }}
       >
         <motion.span

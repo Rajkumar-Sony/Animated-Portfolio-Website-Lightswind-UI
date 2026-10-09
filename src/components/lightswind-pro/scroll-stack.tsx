@@ -11,43 +11,69 @@ export interface ScrollStackCard {
 
 interface ScrollStackProps {
   cards: ScrollStackCard[];
+  /** Pinned together with the cards, so it stays attached while they stack. */
+  header?: React.ReactNode;
   cardHeight?: number;
   scrollPerCard?: number;
+  /** Distance from the viewport top the cards never pin above; must clear the fixed header. */
+  pinTop?: number;
   className?: string;
 }
 
-const defaultBgs = [
-  "https://images.pexels.com/photos/6985136/pexels-photo-6985136.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "https://images.pexels.com/photos/6985128/pexels-photo-6985128.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "https://images.pexels.com/photos/2847648/pexels-photo-2847648.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "https://images.pexels.com/photos/1103970/pexels-photo-1103970.jpeg?auto=compress&cs=tinysrgb&w=1200",
-  "https://images.pexels.com/photos/325185/pexels-photo-325185.jpeg?auto=compress&cs=tinysrgb&w=1200",
-];
+const HINT_SPACE = 56;
+/** Gap kept below the stack when it pins, so the floating dock doesn't cover it. */
+const BOTTOM_GAP = 24;
+
+/**
+ * Panel top (viewport px) at which the stack pins: header + cards centred between the nav and the
+ * bottom gap. When they don't fit, it pins as soon as they're fully on screen; on short screens the
+ * header may scroll under the nav.
+ */
+const pinAtFor = (viewportH: number, headerH: number, stackH: number, pinTop: number) => {
+  const panelH = headerH + stackH;
+  const centred = pinTop + (viewportH - pinTop - BOTTOM_GAP - panelH) / 2;
+  return Math.max(pinTop - headerH, Math.min(centred, viewportH - panelH - BOTTOM_GAP));
+};
 
 const ScrollStack: React.FC<ScrollStackProps> = ({
   cards,
+  header,
   cardHeight = 420,
   scrollPerCard = 300,
+  pinTop = 96,
   className = "",
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const stickyPanelRef = useRef<HTMLDivElement>(null); // NEW: Ref for direct DOM manipulation
+  const stickyPanelRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(0);
-  const [vpH, setVpH] = useState(600);
+  const [vpH, setVpH] = useState(800);
+  const [headerH, setHeaderH] = useState(0);
+  const headerHRef = useRef(0);
 
-  // Stable refs — measured once on mount / resize
   const scrollParentRef = useRef<Element | null>(null);
   const containerOffsetRef = useRef(0);
 
   const list = cards.slice(0, 5);
   const N = list.length;
   const totalScrollZone = N * scrollPerCard;
+  const stackH = cardHeight + HINT_SPACE;
+
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(() => {
+      headerHRef.current = el.offsetHeight;
+      setHeaderH(el.offsetHeight);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
-    // ── 1. Find scroll parent ────────────────────────────────────────────────
     let scrollParent: Element | null = null;
     let node: Element | null = el.parentElement;
     while (node) {
@@ -60,7 +86,6 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     }
     scrollParentRef.current = scrollParent;
 
-    // ── 2. Measure stable offset in CONTENT SPACE ───────────────────────────
     const measure = () => {
       const sp = scrollParentRef.current;
       const elRect = el.getBoundingClientRect();
@@ -74,34 +99,34 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       }
     };
 
-    // Slight delay ensures the DOM/Preview div is fully rendered before measuring
     const measureTimer = window.setTimeout(measure, 100);
 
-    // ── 3. Hot scroll handler (Direct DOM + React State) ────────────────────
     let animId: number | null = null;
     const update = () => {
       if (animId) cancelAnimationFrame(animId);
       animId = requestAnimationFrame(() => {
         const sp = scrollParentRef.current;
+        const pinAt = pinAtFor(
+          sp ? sp.clientHeight : window.innerHeight,
+          headerHRef.current,
+          stackH,
+          pinTop,
+        );
         // Window scrolling reads the live position: content above (images, fonts) can shift after mount.
         const currentScrolled = sp
-          ? Math.max(0, sp.scrollTop - containerOffsetRef.current)
-          : Math.max(0, -el.getBoundingClientRect().top);
+          ? Math.max(0, sp.scrollTop - containerOffsetRef.current + pinAt)
+          : Math.max(0, pinAt - el.getBoundingClientRect().top);
 
-        // DIRECT DOM MANIPULATION: 
-        // Moves the panel synchronously with the scrollbar, ensuring zero jitter 
-        // and bypassing any CSS overflow: hidden bugs in parent containers.
+        // Moved directly so the panel tracks the scrollbar without React render lag.
         if (stickyPanelRef.current) {
           const innerTop = Math.min(currentScrolled, totalScrollZone);
           stickyPanelRef.current.style.transform = `translateY(${innerTop}px)`;
         }
 
-        // Update React state strictly for card animations (opacity/scale)
         setScrolled(currentScrolled);
       });
     };
 
-    // ── 4. Collect ALL scroll ancestors ─────────────────────────────────────
     const targets: (Element | Window)[] = [window];
     let n: Element | null = el.parentElement;
     while (n) {
@@ -127,131 +152,126 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       window.clearTimeout(measureTimer);
       if (animId) cancelAnimationFrame(animId);
     };
-  }, [totalScrollZone]);
+  }, [totalScrollZone, pinTop, stackH, headerH]);
 
-  const h = vpH || 600;
+  const cardsTop = pinAtFor(vpH, headerH, stackH, pinTop) + headerH;
+  const enterDistance = Math.max(vpH - cardsTop, cardHeight);
+  /** 0 → 1 as card `i` slides up from the viewport bottom; the first card starts in place. */
+  const progressOf = (i: number) =>
+    i === 0 ? 1 : Math.min(1, Math.max(0, (scrolled - (i - 1) * scrollPerCard) / scrollPerCard));
 
   return (
     <div
       ref={containerRef}
       className={`relative w-full ${className}`}
-      style={{ height: h + totalScrollZone }}
+      style={{ height: headerH + stackH + totalScrollZone }}
     >
-      {/* Bulletproof GSAP-style sticky panel */}
       <div
         ref={stickyPanelRef}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: h,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          willChange: "transform", // Hardware acceleration for buttery smoothness
-        }}
+        className="absolute inset-x-0 top-0"
+        style={{ height: headerH + stackH, willChange: "transform" }}
       >
-        {/* Card stack — centered */}
-        <div
-          style={{
-            position: "relative",
-            width: "100%",
-            maxWidth: "56rem",
-            margin: "0 auto",
-            padding: "0 1rem",
-            height: cardHeight,
-          }}
-        >
-          {list.map((card, index) => {
-            const bg = card.backgroundImage ?? defaultBgs[index % defaultBgs.length];
-            const revealAt = index * scrollPerCard;
-            const isVisible = scrolled >= revealAt;
-
-            const above = Math.max(
-              0,
-              Math.min(N - 1 - index, Math.floor((scrolled - revealAt) / scrollPerCard))
-            );
-
-            const entryProgress = isVisible ? Math.min(1, (scrolled - revealAt) / 80) : 0;
-            const entryY = (1 - entryProgress) * 80;
-            const pushY = above * 12;
-            const scale = 1 - above * 0.03;
-            const opacity = isVisible ? Math.max(0.6, 1 - above * 0.1) : 0;
-
-            return (
-              <div
-                key={index}
-                className="absolute inset-x-0 overflow-hidden rounded-2xl shadow-2xl"
-                style={{
-                  height: cardHeight,
-                  top: 0,
-                  zIndex: 10 + index,
-                  transform: `translateY(${entryY - pushY}px) scale(${scale})`,
-                  opacity,
-                  transition:
-                    "transform 0.55s cubic-bezier(0.22,1,0.36,1), opacity 0.45s ease",
-                  willChange: "transform, opacity",
-                  transformOrigin: "center top",
-                }}
-              >
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    backgroundImage: `url('${bg}')`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/55 to-black/10" />
-
-                {card.badge && (
-                  <div className="absolute top-5 right-5 z-10">
-                    <span className="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-white text-sm font-medium border border-white/30">
-                      {card.badge}
-                    </span>
-                  </div>
-                )}
-
-                <div className="absolute inset-0 flex items-end p-6 sm:p-10 z-10">
-                  {card.content ?? (
-                    <div className="max-w-lg">
-                      <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 leading-tight">
-                        {card.title}
-                      </h3>
-                      {card.subtitle && (
-                        <p className="text-white/70 text-sm sm:text-base leading-relaxed line-clamp-3">
-                          {card.subtitle}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </div>
-
-                <div className="absolute bottom-5 right-6 z-10 text-white/40 text-xs font-mono tracking-widest">
-                  {String(index + 1).padStart(2, "0")} / {String(N).padStart(2, "0")}
-                </div>
-              </div>
-            );
-          })}
+        <div ref={headerRef} className="flow-root">
+          {header}
         </div>
 
-        {/* Progress dots */}
-        <div className="absolute right-5 top-1/2 -translate-y-1/2 flex flex-col gap-2.5 z-50">
-          {list.map((_, i) => {
-            const active = scrolled >= i * scrollPerCard;
-            return (
-              <div
-                key={i}
-                className={`rounded-full transition-all duration-300 ${active ? "bg-fg shadow-[0_0_6px_var(--accent-ink)]" : "bg-fg-subtle/40"}`}
-                style={{ width: active ? 8 : 5, height: active ? 8 : 5 }}
-              />
-            );
-          })}
+        <div className="relative w-full" style={{ height: cardHeight }}>
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              maxWidth: "56rem",
+              margin: "0 auto",
+              padding: "0 1rem",
+              height: cardHeight,
+            }}
+          >
+            {list.map((card, index) => {
+              const entryProgress = progressOf(index);
+              let above = 0;
+              for (let j = index + 1; j < N; j++) if (progressOf(j) >= 1) above += 1;
+
+              const entryY = (1 - entryProgress) * enterDistance;
+              const pushY = above * 12;
+              const scale = 1 - above * 0.03;
+              const opacity = entryProgress > 0 ? Math.max(0.6, 1 - above * 0.1) : 0;
+
+              return (
+                <div
+                  key={index}
+                  className="absolute inset-x-0 overflow-hidden rounded-2xl shadow-2xl"
+                  style={{
+                    height: cardHeight,
+                    top: 0,
+                    zIndex: 10 + index,
+                    transform: `translateY(${entryY - pushY}px) scale(${scale})`,
+                    opacity,
+                    transition: "transform 0.15s ease-out, opacity 0.3s ease",
+                    willChange: "transform, opacity",
+                    transformOrigin: "center top",
+                  }}
+                >
+                  {card.backgroundImage ? (
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        backgroundImage: `url('${card.backgroundImage}')`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    />
+                  ) : (
+                    <div className="bg-gradient-accent absolute inset-0" />
+                  )}
+                  <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/55 to-black/10" />
+
+                  {card.badge && (
+                    <div className="absolute top-5 right-5 z-10">
+                      <span className="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-white text-sm font-medium border border-white/30">
+                        {card.badge}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="absolute inset-0 flex items-end p-6 sm:p-10 z-10">
+                    {card.content ?? (
+                      <div className="max-w-lg">
+                        <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 leading-tight">
+                          {card.title}
+                        </h3>
+                        {card.subtitle && (
+                          <p className="text-white/70 text-sm sm:text-base leading-relaxed line-clamp-3">
+                            {card.subtitle}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="absolute bottom-5 right-6 z-10 text-white/40 text-xs font-mono tracking-widest">
+                    {String(index + 1).padStart(2, "0")} / {String(N).padStart(2, "0")}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="absolute right-5 top-1/2 -translate-y-1/2 flex flex-col gap-2.5 z-50">
+            {list.map((_, i) => {
+              const active = progressOf(i) >= 1;
+              return (
+                <div
+                  key={i}
+                  className={`rounded-full transition-all duration-300 ${active ? "bg-fg shadow-[0_0_6px_var(--accent-ink)]" : "bg-fg-subtle/40"}`}
+                  style={{ width: active ? 8 : 5, height: active ? 8 : 5 }}
+                />
+              );
+            })}
+          </div>
         </div>
 
         {scrolled < 20 && (
-          <div className="absolute bottom-8 inset-x-0 flex justify-center z-50 pointer-events-none">
+          <div className="absolute bottom-2 inset-x-0 flex justify-center z-50 pointer-events-none">
             <p className="text-xs text-fg-muted tracking-[0.2em] uppercase animate-bounce motion-reduce:animate-none">
               scroll to explore
             </p>

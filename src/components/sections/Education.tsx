@@ -1,11 +1,14 @@
 import { motion } from "framer-motion";
 import {
-  Brain,
+  Award,
+  BadgeCheck,
   Building2,
   Calendar,
+  ChevronDown,
   CircleCheck,
   CodeXml,
   Crown,
+  ExternalLink,
   Handshake,
   Lightbulb,
   Medal,
@@ -13,13 +16,20 @@ import {
   Rocket,
   Server,
   Sparkles,
+  Star,
   Workflow,
   type LucideIcon,
 } from "lucide-react";
 import ScrollStack, { type ScrollStackCard } from "@/components/lightswind-pro/scroll-stack";
 import { Reveal, RevealItem } from "@/components/ui/Reveal";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import { education, skills } from "@/data/portfolio";
+import {
+  certificationGroups,
+  education,
+  skills,
+  type Certification,
+  type CertificationGroup,
+} from "@/data/portfolio";
 import { cn } from "@/lib/cn";
 import { easeOut } from "@/lib/motion";
 
@@ -74,6 +84,140 @@ const degreeCards: ScrollStackCard[] = education.map((item) => ({
   content: <DegreeContent item={item} />,
 }));
 
+function CertificationRow({ cert }: { cert: Certification }) {
+  const body = (
+    <>
+      <span className="grid size-9 shrink-0 place-items-center rounded-xs border border-line bg-surface-sunken">
+        <BadgeCheck aria-hidden className="size-4" />
+      </span>
+      <span className="flex min-w-0 flex-1 flex-col gap-1">
+        <span className="text-sm leading-snug font-semibold">{cert.name}</span>
+        <span className="text-xs text-fg-muted">
+          {cert.issuer}
+          {cert.issued && <span className="sm:hidden"> · Issued {cert.issued}</span>}
+        </span>
+        {cert.credentialId && (
+          <span className="truncate font-mono text-2xs text-fg-muted">ID {cert.credentialId}</span>
+        )}
+      </span>
+      {cert.issued && (
+        <time className="hidden shrink-0 pt-0.5 text-xs font-medium whitespace-nowrap text-fg-muted tabular-nums sm:block">
+          {cert.issued}
+        </time>
+      )}
+      <span className="grid w-4 shrink-0 pt-0.5">
+        {cert.url && <ExternalLink aria-hidden className="size-4 text-fg-muted" />}
+      </span>
+    </>
+  );
+  const className = "flex items-start gap-3 rounded-sm px-3 py-3.5 transition-colors duration-150";
+
+  return cert.url ? (
+    <a
+      href={cert.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${cert.name}, ${cert.issuer}: see credential (opens in a new tab)`}
+      className={cn(className, "hover:bg-surface-sunken")}
+    >
+      {body}
+    </a>
+  ) : (
+    <div className={className}>{body}</div>
+  );
+}
+
+function yearRange(items: Certification[]) {
+  const years = items.flatMap((item) => (item.issued ? [item.issued.slice(-4)] : []));
+  if (years.length === 0) return null;
+  const first = years[0];
+  const last = years[years.length - 1];
+  return first === last ? first : `${first} – ${last}`;
+}
+
+function CertificationGroupPanel({ group }: { group: CertificationGroup }) {
+  const Icon = group.icon;
+  const { items, badges } = group;
+  const range = yearRange(items);
+  const noun = group.itemNoun ?? "certificate";
+  const summary = [
+    `${items.length} ${noun}${items.length === 1 ? "" : "s"}`,
+    badges && `${badges.length} skill badges`,
+    range,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
+  return (
+    <details className="group rounded-md border border-line bg-surface-raised shadow-soft transition-[border-color,box-shadow] duration-300 hover:border-line-strong open:shadow-md">
+      <summary className="flex cursor-pointer list-none items-center gap-4 p-5 sm:p-6 [&::-webkit-details-marker]:hidden">
+        <span className="grid size-10 shrink-0 place-items-center rounded-sm border border-line bg-surface-sunken">
+          <Icon aria-hidden className="size-5" />
+        </span>
+        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <span className="font-semibold">{group.label}</span>
+          <span className="text-xs text-fg-muted">{summary}</span>
+        </span>
+        <ChevronDown
+          aria-hidden
+          className="size-5 shrink-0 text-fg-muted transition-transform duration-300 group-open:rotate-180"
+        />
+      </summary>
+
+      <div className="border-t border-line p-5 sm:p-6">
+        <ul className="-mx-3 flex flex-col divide-y divide-line">
+          {items.map((cert) => (
+            <li key={cert.name}>
+              <CertificationRow cert={cert} />
+            </li>
+          ))}
+        </ul>
+
+        {badges && (
+          <div className="mt-8">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h4 className="flex items-center gap-2 text-sm font-bold">
+                <Star aria-hidden className="size-4" /> Skill badges
+              </h4>
+              {group.badgesUrl && (
+                <a
+                  href={group.badgesUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-11 items-center gap-1.5 text-xs font-semibold text-fg-muted hover:text-fg"
+                >
+                  View profile <ExternalLink aria-hidden className="size-3.5" />
+                  <span className="sr-only">(opens in a new tab)</span>
+                </a>
+              )}
+            </div>
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {badges.map((badge) => (
+                <li key={badge.name} className="rounded-sm border border-line bg-surface-sunken p-4">
+                  <p className="text-sm font-semibold">{badge.name}</p>
+                  <p role="img" aria-label={`${badge.stars} of 5 stars`} className="mt-1.5 flex gap-0.5">
+                    {Array.from({ length: 5 }, (_, i) => (
+                      <Star
+                        key={i}
+                        aria-hidden
+                        className={cn(
+                          "size-3.5",
+                          i < badge.stars ? "fill-amber-400 text-amber-400" : "text-fg-subtle",
+                        )}
+                      />
+                    ))}
+                  </p>
+                  <p className="mt-1.5 text-2xs text-fg-muted">{badge.solved} challenges solved</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </details>
+  );
+}
+
 function SkillBar({ name, level, icon: Icon }: { name: string; level: number; icon: LucideIcon }) {
   return (
     <li>
@@ -109,14 +253,34 @@ function SkillBar({ name, level, icon: Icon }: { name: string; level: number; ic
 export function Education() {
   return (
     <Section id="education">
-      <SectionHeading
-        id="education"
-        icon={Brain}
-        title="Academic"
-        highlight="Background"
-        description="Building the theoretical foundation and research methodologies that empower high-performance practical engineering."
+      <ScrollStack
+        cards={degreeCards}
+        cardHeight={440}
+        header={
+          <SectionHeading
+            id="education"
+            title="Academic"
+            highlight="Background"
+            description="The computer applications degrees behind my Java backend work, plus the skills I use every day."
+          />
+        }
       />
-      <ScrollStack cards={degreeCards} cardHeight={440} />
+
+      <div className="mt-20">
+        <h3 className="mb-6 flex items-center gap-3 text-2xl font-bold tracking-tight">
+          <span className="grid size-9 place-items-center rounded-xs border border-line bg-surface-raised shadow-sm">
+            <Award aria-hidden className="size-4" />
+          </span>
+          Licenses &amp; Certifications
+        </h3>
+        <Reveal as="ul" className="flex flex-col gap-3" staggerChildren={0.05}>
+          {certificationGroups.map((group) => (
+            <RevealItem key={group.id} as="li">
+              <CertificationGroupPanel group={group} />
+            </RevealItem>
+          ))}
+        </Reveal>
+      </div>
 
       <div className="mt-20">
         <h3 className="mb-6 flex items-center gap-3 text-2xl font-bold tracking-tight">

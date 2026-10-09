@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { CountUp } from "@/components/ui/CountUp";
 import { Reveal, RevealItem } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
+import { StatGraph } from "@/components/ui/StatGraph";
 import { about } from "@/data/portfolio";
 import { fadeUp, stagger } from "@/lib/motion";
 
@@ -24,9 +25,13 @@ export function About() {
       </motion.div>
 
       <Reveal as="ul" className="grid grid-cols-2 gap-3 sm:gap-4">
-        {about.stats.map(({ value, suffix, label, icon: Icon }) => (
+        {about.stats.map(({ value, suffix, label, icon: Icon, graph }) => (
           <RevealItem as="li" key={label}>
-            <div className="group h-full rounded-md border border-line bg-surface-raised p-5 shadow-soft transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-line-strong hover:shadow-md sm:p-6">
+            <div className="group relative isolate h-full overflow-hidden rounded-md border border-line bg-surface-raised p-5 shadow-soft transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-line-strong hover:shadow-md sm:p-6">
+              <StatGraph
+                kind={graph}
+                className="-z-10 opacity-80 transition-opacity duration-300 group-hover:opacity-100"
+              />
               <span className="grid size-9 place-items-center rounded-xs border border-line text-fg transition-colors duration-300 group-hover:border-transparent group-hover:bg-surface-inverse group-hover:text-fg-inverse">
                 <Icon aria-hidden className="size-4" />
               </span>

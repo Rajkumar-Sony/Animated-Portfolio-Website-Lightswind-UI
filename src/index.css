@@ -31,6 +31,8 @@
   --success: #15803d;
   --success-soft: #dcfce7;
   --danger: #b91c1c;
+  --warning: #f59e0b;
+  --hazard-ink: #171717;
   --focus: #6366f1;
   --dot: rgb(0 0 0 / 0.06);
   --skin: #e2a983;
@@ -147,6 +149,8 @@
   --success: #4ade80;
   --success-soft: rgb(74 222 128 / 0.12);
   --danger: #f87171;
+  --warning: #fbbf24;
+  --hazard-ink: #262626;
   --focus: #a5b4fc;
   --dot: rgb(255 255 255 / 0.09);
   --metal-1: #ffffff;
@@ -225,6 +229,7 @@
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
   --color-danger: var(--danger);
+  --color-warning: var(--warning);
   --color-focus: var(--focus);
   --color-skin: var(--skin);
 
@@ -286,6 +291,108 @@
     3%,
     10% {
       opacity: 1;
+    }
+  }
+  --animate-hazard-crawl: hazard-crawl 1.1s linear infinite;
+  --animate-crossing: crossing 1.2s steps(1, end) var(--crossing-delay, 0s) infinite;
+  --animate-lay-sleeper: lay-sleeper 3.6s cubic-bezier(0.2, 0.8, 0.2, 1) var(--sleeper-delay, 0s) infinite both;
+  --animate-survey: survey 2.4s ease-in-out infinite;
+  --animate-platform-build: platform-build 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  --animate-idle-glow: idle-glow 2.4s ease-in-out infinite;
+  --animate-lamp-flicker: lamp-flicker 3.4s steps(1, end) var(--flicker-delay, 0s) infinite;
+  --animate-tunnel-mist: tunnel-mist 4.5s ease-out var(--puff-delay, 0s) infinite both;
+  @keyframes lamp-flicker {
+    0% {
+      opacity: 1;
+    }
+    46% {
+      opacity: 0.35;
+    }
+    48% {
+      opacity: 1;
+    }
+    52% {
+      opacity: 0.5;
+    }
+    54%,
+    100% {
+      opacity: 1;
+    }
+  }
+  /* Cool air breathing out of the tunnel mouth. */
+  @keyframes tunnel-mist {
+    0% {
+      opacity: 0;
+      transform: translateY(0) scale(0.5);
+    }
+    30% {
+      opacity: 0.16;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(30px) scale(1.8);
+    }
+  }
+  @keyframes idle-glow {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 0.85;
+    }
+  }
+  @keyframes platform-build {
+    0% {
+      opacity: 1;
+      transform: scaleY(0);
+    }
+    60%,
+    85% {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scaleY(1);
+    }
+  }
+  @keyframes hazard-crawl {
+    to {
+      background-position: 16px 0;
+    }
+  }
+  /* Level-crossing lamps: hard on/off, the pair offset by half a cycle. */
+  @keyframes crossing {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.2;
+    }
+  }
+  @keyframes lay-sleeper {
+    0% {
+      opacity: 0;
+      transform: translateY(-6px) scaleX(0.3);
+    }
+    12%,
+    70% {
+      opacity: 1;
+      transform: none;
+    }
+    85%,
+    100% {
+      opacity: 0;
+      transform: none;
+    }
+  }
+  @keyframes survey {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(250%);
     }
   }
   --animate-meteor: meteor var(--meteor-duration, 5s) linear var(--meteor-delay, 0s) infinite;
@@ -715,6 +822,18 @@
     var(--accent-via),
     var(--accent-to)
   );
+}
+
+/* Hazard tape; the 16px tile repeats seamlessly, so `animate-hazard-crawl` can slide it. */
+@utility bg-hazard {
+  background-image: linear-gradient(
+    -45deg,
+    var(--hazard-ink) 25%,
+    var(--warning) 25% 50%,
+    var(--hazard-ink) 50% 75%,
+    var(--warning) 75%
+  );
+  background-size: 16px 16px;
 }
 
 /* Warm light the sun throws up into the dark footer above the landscape. */

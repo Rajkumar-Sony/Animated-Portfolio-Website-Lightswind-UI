@@ -8,10 +8,10 @@ import { About } from "@/components/sections/About";
 import { Career } from "@/components/sections/Career";
 import { Contact } from "@/components/sections/Contact";
 import { Education } from "@/components/sections/Education";
+import { Faq } from "@/components/sections/Faq";
 import { Hero } from "@/components/sections/Hero";
 import { Projects } from "@/components/sections/Projects";
 import { Services } from "@/components/sections/Services";
-import { Testimonials } from "@/components/sections/Testimonials";
 import type { SectionId } from "@/data/portfolio";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { useScrollState } from "@/hooks/useScrollState";
@@ -23,7 +23,7 @@ const SECTION_IDS: readonly SectionId[] = [
   "projects",
   "career",
   "education",
-  "testimonials",
+  "faq",
   "contact",
 ];
 
@@ -59,7 +59,7 @@ export default function App() {
           <Projects />
           <Career />
           <Education />
-          <Testimonials />
+          <Faq />
           <Contact />
         </main>
         <Footer />

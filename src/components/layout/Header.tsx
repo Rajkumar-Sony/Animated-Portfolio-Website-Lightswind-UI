@@ -55,8 +55,13 @@ export function Header({ active }: HeaderProps) {
 
         <div className="flex h-14 items-center justify-between gap-4 pr-2 pl-3 sm:pr-3 sm:pl-4">
           <div className="flex items-center gap-1">
-            <a href="#hero" className="flex min-h-11 items-center gap-2.5 rounded-sm pr-2" onClick={() => setOpen(false)}>
-              <Monogram initials={profile.initials} className="size-8" />
+            <a
+              href="#hero"
+              aria-label={`${profile.name}, back to top`}
+              className="flex min-h-11 items-center gap-2.5 rounded-sm pr-2"
+              onClick={() => setOpen(false)}
+            >
+              <Monogram initials={profile.initials} photo={profile.photo} className="size-11 rounded-full md:size-8 md:rounded-sm" />
               <span className="hidden text-sm font-semibold sm:inline">{profile.name}</span>
             </a>
 

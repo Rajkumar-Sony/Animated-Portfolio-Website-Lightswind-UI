@@ -5,12 +5,14 @@ import GooeyText from "@/components/lightswind-pro/gooey-text";
 import Meteors from "@/components/lightswind-pro/meteors";
 import { Monogram } from "@/components/ui/Monogram";
 import { SocialLinks } from "@/components/ui/SocialLinks";
-import { footer, footerNav, profile } from "@/data/portfolio";
+import { footer, footerNav, profile, socials } from "@/data/portfolio";
 import { fadeUp } from "@/lib/motion";
 import { FooterScene } from "./FooterScene";
 
 /** Width of the signature in Black Ops One at 0.01em tracking, in ems; sizes it to span the footer. */
 const signatureWidthEm = 8.55;
+
+const linkedin = socials.find((social) => social.label === "LinkedIn")?.href;
 
 export function Footer() {
   return (
@@ -25,7 +27,7 @@ export function Footer() {
       <div className="relative mx-auto flex max-w-5xl flex-col gap-10 px-5 pt-12 sm:px-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Monogram initials={profile.initials} />
+            <Monogram initials={profile.initials} photo={profile.photo} />
             <span className="flex flex-col leading-tight">
               <span className="text-sm font-semibold">{profile.name}</span>
               <span className="text-2xs tracking-[0.14em] text-fg-muted uppercase">{profile.role}</span>
@@ -65,9 +67,17 @@ export function Footer() {
         <div className="flex flex-col-reverse items-center justify-between gap-4 sm:flex-row">
           <SocialLinks variant="pill" />
           <p className="flex items-center gap-1.5 text-xs font-medium text-fg">
-            © {new Date().getFullYear()} {profile.name}. Crafted with
+            Built with
             <Heart aria-label="love" className="size-3.5 fill-rose-500 text-rose-500" />
-            &amp; Lightswind UI
+            by
+            <a
+              href={linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold transition-colors duration-150 hover:text-fg-muted"
+            >
+              {profile.name}
+            </a>
           </p>
         </div>
       </div>

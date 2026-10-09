@@ -1,6 +1,6 @@
 import { useId, useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CircleCheck, Loader2, Mail, MapPin, Phone, Send } from "lucide-react";
+import { CircleCheck, Loader2, Mail, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
 import { contact, profile } from "@/data/portfolio";
@@ -37,7 +37,6 @@ function FieldError({ id, message }: { id: string; message?: string }) {
 
 const contactRows = [
   { icon: Mail, label: profile.email, href: `mailto:${profile.email}` },
-  { icon: Phone, label: profile.phone, href: `tel:${profile.phone.replace(/[^\d+]/g, "")}` },
   { icon: MapPin, label: profile.location },
 ];
 
@@ -173,7 +172,7 @@ export function Contact() {
           <textarea
             {...fieldProps("message")}
             rows={5}
-            placeholder="Tell me about your project…"
+            placeholder="Tell me about the role or project…"
             onChange={(e) => update("message")(e.target.value)}
             className={cn(inputStyles, "mt-1.5 resize-y py-3")}
           />

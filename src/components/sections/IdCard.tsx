@@ -1,10 +1,14 @@
 import { useMemo, useState, type ReactNode } from "react";
 import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion";
 import { RotateCw } from "lucide-react";
-import { profile } from "@/data/portfolio";
+import { encode } from "uqr";
+import { profile, socials } from "@/data/portfolio";
 import { cn } from "@/lib/cn";
+import { code128 } from "@/lib/code128";
 import { LanyardStrap } from "./LanyardStrap";
 import { LanyardTag, STRAP_END_Y } from "./LanyardTag";
+
+const linkedin = socials.find((social) => social.label === "LinkedIn")?.href ?? profile.website;
 
 const CARD_WIDTH = 324;
 /** Pulls the card up so the hook tip rests in the card's slot. */
@@ -12,7 +16,7 @@ const HOOK_OVERLAP = 19;
 /** How far the card can be pulled from rest before the strap stops giving. */
 const DRAG_LIMIT = { top: -24, bottom: 48, left: -56, right: 56 };
 
-/** Deterministic pseudo-random sequence so the barcode and QR art never change between renders. */
+/** Deterministic pseudo-random sequence so the bar heights never change between renders. */
 function seeded(seed: string) {
   let h = 2166136261;
   for (const ch of seed) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
@@ -23,52 +27,52 @@ function seeded(seed: string) {
   };
 }
 
-function Barcode({ value }: { value: string }) {
-  const bars = useMemo(() => {
+/**
+ * Scannable Code 128. Bar heights vary for the badge look; every bar reaches the bottom 60%,
+ * so a scan line through the lower part still crosses all of them. Bars stay dark on light in
+ * both themes, since many scanners can't read inverted barcodes.
+ */
+function Barcode({ value, label }: { value: string; label: string }) {
+  const { path, width } = useMemo(() => {
+    const { bars, width } = code128(value);
     const rand = seeded(value);
-    return Array.from({ length: 46 }, () => ({ w: rand() > 0.6 ? 3 : 1.5, h: 60 + rand() * 40 }));
+    const path = bars
+      .map(([x, w]) => {
+        const h = 0.6 + rand() * 0.4;
+        return `M${x} ${1 - h}h${w}v${h}h-${w}z`;
+      })
+      .join("");
+    return { path, width };
   }, [value]);
 
   return (
-    <div aria-hidden className="flex h-7 items-end justify-center gap-[2px] rounded-xs border border-line px-3 py-1">
-      {bars.map((bar, i) => (
-        <span key={i} className="bg-fg" style={{ width: bar.w, height: `${bar.h}%` }} />
-      ))}
+    <div className="h-7 rounded-xs border border-line px-3 py-1 dark:bg-fg">
+      <svg role="img" aria-label={label} viewBox={`0 0 ${width} 1`} preserveAspectRatio="none" className="size-full">
+        <path d={path} className="fill-fg dark:fill-surface-raised" />
+      </svg>
     </div>
   );
 }
 
-function QrArt({ value }: { value: string }) {
-  const size = 21;
-  const cells = useMemo(() => {
-    const rand = seeded(value);
-    const finder = (r: number, c: number) => {
-      const inBox = (r0: number, c0: number) => {
-        const dr = r - r0;
-        const dc = c - c0;
-        if (dr < 0 || dc < 0 || dr > 6 || dc > 6) return null;
-        const ring = Math.min(dr, dc, 6 - dr, 6 - dc);
-        return ring !== 1;
-      };
-      return inBox(0, 0) ?? inBox(0, size - 7) ?? inBox(size - 7, 0);
-    };
-    return Array.from({ length: size * size }, (_, i) => {
-      const r = Math.floor(i / size);
-      const c = i % size;
-      return finder(r, c) ?? rand() > 0.52;
-    });
+function QrCode({ value, label }: { value: string; label: string }) {
+  const { size, path } = useMemo(() => {
+    const { data, size } = encode(value, { ecc: "M", border: 0 });
+    const path = data
+      .flatMap((row, y) => row.map((on, x) => (on ? `M${x} ${y}h1v1h-1z` : "")))
+      .join("");
+    return { size, path };
   }, [value]);
 
   return (
-    <div
-      aria-hidden
-      className="grid aspect-square w-36 gap-0 rounded-sm bg-white p-2.5"
-      style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}
+    <svg
+      role="img"
+      aria-label={label}
+      viewBox={`0 0 ${size} ${size}`}
+      shapeRendering="crispEdges"
+      className="aspect-square w-36 rounded-sm bg-white p-3"
     >
-      {cells.map((on, i) => (
-        <span key={i} className={on ? "bg-neutral-950" : undefined} />
-      ))}
-    </div>
+      <path d={path} className="fill-neutral-950" />
+    </svg>
   );
 }
 
@@ -135,7 +139,7 @@ export function IdCard() {
               animate={{ rotateY: flipped ? 180 : 0 }}
               transition={{ type: "spring", stiffness: 140, damping: 18 }}
               style={{ marginTop: -HOOK_OVERLAP, transformPerspective: 1200 }}
-              className="relative h-[440px] [transform-style:preserve-3d]"
+              className="relative h-[476px] [transform-style:preserve-3d]"
             >
               {/* Front */}
               <article
@@ -147,16 +151,16 @@ export function IdCard() {
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent to-surface-raised/70" />
                 </div>
                 <CardSlot />
-                <div className="relative -mt-14 flex flex-col items-center px-5 text-center">
+                <div className="relative -mt-21 flex flex-col items-center px-5 text-center">
                   <span className="bg-gradient-accent rounded-full p-1 shadow-md">
                     <img
                       src={profile.photo}
                       alt={`Portrait of ${profile.name}`}
-                      width={96}
-                      height={96}
+                      width={136}
+                      height={136}
                       fetchPriority="high"
                       draggable={false}
-                      className="size-24 rounded-full border-4 border-surface-raised object-cover"
+                      className="size-34 rounded-full border-4 border-surface-raised object-cover"
                     />
                   </span>
                   <h3 className="mt-3 text-lg font-bold">{profile.name}</h3>
@@ -175,10 +179,13 @@ export function IdCard() {
                     </span>
                   </Field>
                 </dl>
-                <div className="mx-5 mt-auto mb-5 flex flex-col gap-2">
-                  <Barcode value={profile.idCard.serial} />
+                <div className="mx-5 mt-auto mb-5 flex flex-col gap-2 pt-2">
+                  <Barcode
+                    value={linkedin.split("/").filter(Boolean).at(-1) ?? profile.name}
+                    label={`Barcode of ${profile.name}'s LinkedIn username`}
+                  />
                   <div className="flex justify-between text-2xs font-bold tracking-[0.12em] uppercase">
-                    <span>{profile.idCard.serial}</span>
+                    <span>{profile.idCard.credential}</span>
                     <span className="text-fg-muted">{profile.idCard.issuer}</span>
                   </div>
                 </div>
@@ -192,13 +199,21 @@ export function IdCard() {
               >
                 <CardSlot />
                 <span className="text-2xs font-semibold tracking-[0.2em] uppercase opacity-70">Scan to connect</span>
-                <QrArt value={profile.website} />
+                <QrCode value={linkedin} label={`QR code for ${profile.name} on LinkedIn`} />
                 <div className="flex flex-col gap-1">
                   <span className="text-base font-bold">{profile.email}</span>
-                  <span className="text-xs opacity-70">{profile.website}</span>
+                  <span className="text-xs opacity-70">{linkedin.replace(/^https?:\/\/(www\.)?/, "")}</span>
+                </div>
+                <div className="flex flex-col items-center gap-2 text-2xs tracking-[0.14em] uppercase">
+                  <span className="opacity-60">
+                    {profile.idCard.experience} · {profile.idCard.company}
+                  </span>
+                  <span className="rounded-full border border-current/25 px-3 py-1 opacity-60">
+                    Notice period: {profile.idCard.noticePeriod}
+                  </span>
                 </div>
                 <span className="text-2xs tracking-[0.14em] uppercase opacity-60">
-                  {profile.idCard.serial} · Valid thru 2030
+                  {profile.idCard.credential}
                 </span>
               </article>
             </motion.div>
