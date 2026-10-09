@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useId, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Clock, MapPin } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { INDIA_SOI_OUTLINE } from "./india-outline-soi";
+import { Airplane } from "@/components/sections/SkyCraft";
+import { AIRPLANE } from "@/components/sections/skyCraftSizes";
 
 type LngLat = readonly [number, number];
 
@@ -55,7 +58,7 @@ export interface WorldMapProps extends React.SVGProps<SVGSVGElement> {
 }
 
 const INDIA_JAPAN_BOUNDS = {
-  minLat: 7.4,
+  minLat: 6.5,
   maxLat: 46,
   minLng: 67.4,
   maxLng: 146,
@@ -69,146 +72,7 @@ const COUNTRY_OUTLINES: Array<{
   {
     id: "india",
     label: "India",
-    polygons: [
-      [
-        [77.837451, 35.49401],
-        [78.912269, 34.321936],
-        [78.811086, 33.506198],
-        [79.208892, 32.994395],
-        [79.176129, 32.48378],
-        [78.458446, 32.618164],
-        [78.738894, 31.515906],
-        [79.721367, 30.882715],
-        [81.111256, 30.183481],
-        [80.476721, 29.729865],
-        [80.088425, 28.79447],
-        [81.057203, 28.416095],
-        [81.999987, 27.925479],
-        [83.304249, 27.364506],
-        [84.675018, 27.234901],
-        [85.251779, 26.726198],
-        [86.024393, 26.630985],
-        [87.227472, 26.397898],
-        [88.060238, 26.414615],
-        [88.174804, 26.810405],
-        [88.043133, 27.445819],
-        [88.120441, 27.876542],
-        [88.730326, 28.086865],
-        [88.814248, 27.299316],
-        [88.835643, 27.098966],
-        [89.744528, 26.719403],
-        [90.373275, 26.875724],
-        [91.217513, 26.808648],
-        [92.033484, 26.83831],
-        [92.103712, 27.452614],
-        [91.696657, 27.771742],
-        [92.503119, 27.896876],
-        [93.413348, 28.640629],
-        [94.56599, 29.277438],
-        [95.404802, 29.031717],
-        [96.117679, 29.452802],
-        [96.586591, 28.83098],
-        [96.248833, 28.411031],
-        [97.327114, 28.261583],
-        [97.402561, 27.882536],
-        [97.051989, 27.699059],
-        [97.133999, 27.083774],
-        [96.419366, 27.264589],
-        [95.124768, 26.573572],
-        [95.155153, 26.001307],
-        [94.603249, 25.162495],
-        [94.552658, 24.675238],
-        [94.106742, 23.850741],
-        [93.325188, 24.078556],
-        [93.286327, 23.043658],
-        [93.060294, 22.703111],
-        [93.166128, 22.27846],
-        [92.672721, 22.041239],
-        [92.146035, 23.627499],
-        [91.869928, 23.624346],
-        [91.706475, 22.985264],
-        [91.158963, 23.503527],
-        [91.46773, 24.072639],
-        [91.915093, 24.130414],
-        [92.376202, 24.976693],
-        [91.799596, 25.147432],
-        [90.872211, 25.132601],
-        [89.920693, 25.26975],
-        [89.832481, 25.965082],
-        [89.355094, 26.014407],
-        [88.563049, 26.446526],
-        [88.209789, 25.768066],
-        [88.931554, 25.238692],
-        [88.306373, 24.866079],
-        [88.084422, 24.501657],
-        [88.69994, 24.233715],
-        [88.52977, 23.631142],
-        [88.876312, 22.879146],
-        [89.031961, 22.055708],
-        [88.888766, 21.690588],
-        [88.208497, 21.703172],
-        [86.975704, 21.495562],
-        [87.033169, 20.743308],
-        [86.499351, 20.151638],
-        [85.060266, 19.478579],
-        [83.941006, 18.30201],
-        [83.189217, 17.671221],
-        [82.192792, 17.016636],
-        [82.191242, 16.556664],
-        [81.692719, 16.310219],
-        [80.791999, 15.951972],
-        [80.324896, 15.899185],
-        [80.025069, 15.136415],
-        [80.233274, 13.835771],
-        [80.286294, 13.006261],
-        [79.862547, 12.056215],
-        [79.857999, 10.357275],
-        [79.340512, 10.308854],
-        [78.885345, 9.546136],
-        [79.18972, 9.216544],
-        [78.277941, 8.933047],
-        [77.941165, 8.252959],
-        [77.539898, 7.965535],
-        [76.592979, 8.899276],
-        [76.130061, 10.29963],
-        [75.746467, 11.308251],
-        [75.396101, 11.781245],
-        [74.864816, 12.741936],
-        [74.616717, 13.992583],
-        [74.443859, 14.617222],
-        [73.534199, 15.990652],
-        [73.119909, 17.92857],
-        [72.820909, 19.208234],
-        [72.824475, 20.419503],
-        [72.630533, 21.356009],
-        [71.175273, 20.757441],
-        [70.470459, 20.877331],
-        [69.16413, 22.089298],
-        [69.644928, 22.450775],
-        [69.349597, 22.84318],
-        [68.176645, 23.691965],
-        [68.842599, 24.359134],
-        [71.04324, 24.356524],
-        [70.844699, 25.215102],
-        [70.282873, 25.722229],
-        [70.168927, 26.491872],
-        [69.514393, 26.940966],
-        [70.616496, 27.989196],
-        [71.777666, 27.91318],
-        [72.823752, 28.961592],
-        [73.450638, 29.976413],
-        [74.42138, 30.979815],
-        [74.405929, 31.692639],
-        [75.258642, 32.271105],
-        [74.451559, 32.7649],
-        [74.104294, 33.441473],
-        [73.749948, 34.317699],
-        [74.240203, 34.748887],
-        [75.757061, 34.504923],
-        [76.871722, 34.653544],
-        [77.837451, 35.49401],
-      ],
-    ],
+    polygons: INDIA_SOI_OUTLINE,
   },
   {
     id: "japan",
@@ -289,6 +153,8 @@ const COUNTRY_OUTLINES: Array<{
   },
 ];
 
+// Paint language shared with the bullet train and sky craft: brand-gradient hull so the
+// craft reads on both themes, dark glazing, and restrained navigation lights.
 export const DEFAULT_MARKERS: MapMarker[] = [
   { id: "bihar", lat: 25.0961, lng: 85.3131, label: "Bihar, India", country: "IN", timeZone: "Asia/Kolkata", ping: "Home", size: 3.5, pulse: true },
   { id: "japan", lat: 34.6937, lng: 135.5023, label: "Osaka, Japan", country: "JP", timeZone: "Asia/Tokyo", ping: "Now", size: 3.5, pulse: true },
@@ -348,6 +214,8 @@ export function WorldMap({
 }: WorldMapProps) {
   const [hoveredMarker, setHoveredMarker] = useState<MapMarker | null>(null);
   const [now, setNow] = useState<Date>(new Date());
+  // Collision-safe prefix for the defs' gradient ids (a page can render several maps).
+  const idPrefix = useId().replace(/:/g, "");
   void dotRadius;
   void dotColor;
   void stagger;
@@ -404,9 +272,13 @@ export function WorldMap({
         path: `M ${start.x} ${start.y} Q ${midX} ${midY} ${end.x} ${end.y}`,
         color: arc.color || markerColor,
         strokeWidth: arc.strokeWidth || 1.4,
+        // Per-arc gradient runs start -> end so the route beam reads like the header's.
+        gradientId: `${idPrefix}-route-${idx}`,
+        start,
+        end,
       };
     });
-  }, [arcs, width, height, markerColor]);
+  }, [arcs, width, height, markerColor, idPrefix]);
 
   return (
     <div className={cn("relative flex size-full select-none flex-col items-center justify-center overflow-visible", className)}>
@@ -422,7 +294,17 @@ export function WorldMap({
             <stop offset="0%" stopColor={markerColor} stopOpacity="0.1" />
             <stop offset="100%" stopColor="transparent" stopOpacity="0" />
           </radialGradient>
-        </defs>
+
+          {/* Route beam painted with the same accent gradient the header's BorderBeam uses. */}
+          {plottedArcs.map((arc) => (
+            <linearGradient key={arc.id} id={arc.gradientId} gradientUnits="userSpaceOnUse" x1={arc.start.x} y1={arc.start.y} x2={arc.end.x} y2={arc.end.y}>
+              <stop offset="0" style={{ stopColor: "var(--accent-from)" }} />
+              <stop offset="0.5" style={{ stopColor: "var(--accent-via)" }} />
+              <stop offset="1" style={{ stopColor: "var(--accent-to)" }} />
+            </linearGradient>
+          ))}
+
+          </defs>
 
         <rect width={width} height={height} fill="url(#mapCenterGlow)" opacity="0.75" />
 
@@ -446,10 +328,54 @@ export function WorldMap({
         <g className="pointer-events-none">
           {plottedArcs.map((arc) => (
             <g key={arc.id}>
-              <path d={arc.path} fill="none" stroke={arc.color} strokeWidth={arc.strokeWidth} strokeOpacity={0.55} strokeDasharray="5 5" />
-              <circle r={2.4} fill={arc.color}>
-                <animateMotion path={arc.path} dur="4s" repeatCount="indefinite" />
-              </circle>
+              {/* Dotted flight-path guide; dashes drift gently along the route. */}
+              <path
+                d={arc.path}
+                fill="none"
+                stroke={`url(#${arc.gradientId})`}
+                strokeWidth={arc.strokeWidth}
+                strokeOpacity={0.45}
+                strokeDasharray="1.5 5.5"
+                strokeLinecap="round"
+              >
+                <animate attributeName="stroke-dashoffset" values="0;-14" dur="1.6s" repeatCount="indefinite" />
+              </path>
+
+              {/* The route "confirming": an accent line draws itself in on first view. */}
+              <motion.path
+                d={arc.path}
+                fill="none"
+                stroke={`url(#${arc.gradientId})`}
+                strokeWidth={arc.strokeWidth + 0.5}
+                strokeLinecap="round"
+                strokeOpacity={0.9}
+                initial={{ pathLength: 0 }}
+                whileInView={{ pathLength: 1 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 1.8, ease: "easeInOut" }}
+              />
+
+              {/* The flight: an airliner riding the arc, eased like takeoff -> cruise -> landing. */}
+              <g>
+                <animateMotion
+                  dur="7s"
+                  begin="1.4s"
+                  repeatCount="indefinite"
+                  rotate="auto"
+                  calcMode="spline"
+                  keyTimes="0;1"
+                  keySplines="0.45 0 0.55 1"
+                  path={arc.path}
+                />
+                {/* Fade in on departure, fade out on landing so the loop never teleports. */}
+                <animate attributeName="opacity" dur="7s" begin="1.4s" repeatCount="indefinite" values="0;1;1;0" keyTimes="0;0.06;0.94;1" />
+                {/* Soft engine warmth under the craft. */}
+                <g transform={`scale(0.8) translate(${ -AIRPLANE.width / 2 } ${ -AIRPLANE.height / 2 })`}>
+                  {/* The hero's airliner, riding the route with its own contrail and live lights.
+                      Sized in map units via attributes — CSS classes lose to the base size-full. */}
+                  <Airplane heading={1} width={120} height={40} />
+                </g>
+              </g>
             </g>
           ))}
         </g>

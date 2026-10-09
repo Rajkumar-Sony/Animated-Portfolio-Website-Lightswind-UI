@@ -1,8 +1,12 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { ArrowRight, Download } from "lucide-react";
 import { buttonStyles } from "@/lib/buttonStyles";
 import { AnimatedArrowButtonContent } from "@/components/ui/AnimatedArrowButtonContent";
+import { cn } from "@/lib/cn";
 import { HeroBrandUnderline } from "@/components/ui/HeroBrandUnderline";
+import { BorderBeam } from "@/components/lightswind/border-beam";
+import { ResumeRequestModal } from "@/components/ui/ResumeRequestModal";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { profile } from "@/data/portfolio";
 import { fadeUp, stagger } from "@/lib/motion";
@@ -11,6 +15,8 @@ import { SkyScene } from "./SkyScene";
 import { TechMarquee } from "./TechMarquee";
 
 export function Hero() {
+  const [resumeModalOpen, setResumeModalOpen] = useState(false);
+
   return (
     <section
       id="hero"
@@ -24,7 +30,7 @@ export function Hero() {
       </div>
 
       <div className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-20 px-5 pb-10 sm:px-6 md:gap-24 lg:grid-cols-[minmax(0,1.1fr)_minmax(22rem,0.9fr)] lg:gap-20 xl:gap-28">
-        <motion.div variants={stagger(0.1, 0.15)} initial="hidden" animate="visible" className="flex flex-col items-start">
+        <motion.div variants={stagger(0.1, 0.15)} initial="hidden" animate="visible" className="@container flex flex-col items-start">
           {profile.available && (
             <motion.p
               variants={fadeUp}
@@ -38,11 +44,15 @@ export function Hero() {
             </motion.p>
           )}
 
-          <h1 id="hero-title" data-sky-clear className="text-5xl leading-[1.05] font-bold tracking-tight sm:text-6xl md:text-7xl">
-            <motion.span variants={fadeUp} className="block">
+          <h1
+            id="hero-title"
+            data-sky-clear
+            className="font-hero text-[clamp(1.75rem,10cqw,4rem)] leading-[1.1] font-[480] tracking-tight"
+          >
+            <motion.span variants={fadeUp} className="block whitespace-nowrap">
               Hi, I&apos;m
             </motion.span>
-            <motion.span variants={fadeUp} className="text-gradient block pb-2">
+            <motion.span variants={fadeUp} className="text-gradient block pb-2 whitespace-nowrap">
               {profile.name}
             </motion.span>
           </h1>
@@ -59,10 +69,21 @@ export function Hero() {
             <a href="#projects" className={buttonStyles("primary", "group")}>
               <AnimatedArrowButtonContent icon={ArrowRight}>View Work</AnimatedArrowButtonContent>
             </a>
-            <a href={profile.resumeUrl} download className={buttonStyles("secondary")}>
+            <button
+              type="button"
+              onClick={() => setResumeModalOpen(true)}
+              className={cn(
+                buttonStyles("secondary", "relative"),
+                "hover:border-focus/40 hover:shadow-lg hover:shadow-focus/25",
+              )}
+            >
               Resume
-              <Download aria-hidden className="size-4" />
-            </a>
+              <Download
+                aria-hidden
+                className="size-4 transition-transform duration-200 ease-out group-hover:translate-y-0.5"
+              />
+              <BorderBeam size={60} duration={6} colorFrom="var(--accent-from)" colorTo="var(--accent-to)" />
+            </button>
           </motion.div>
 
           <motion.div variants={fadeUp} className="mt-6 -ml-3">
@@ -81,6 +102,8 @@ export function Hero() {
       </div>
 
       <TechMarquee />
+
+      <ResumeRequestModal open={resumeModalOpen} onClose={() => setResumeModalOpen(false)} />
     </section>
   );
 }

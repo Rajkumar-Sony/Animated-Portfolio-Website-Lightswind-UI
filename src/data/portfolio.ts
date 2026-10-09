@@ -28,10 +28,10 @@ import {
 } from "lucide-react";
 import cmritCampus from "@/assets/education/cmrit-campus.webp";
 import sinhaCollege from "@/assets/education/sinha-college.webp";
-import antiSocialForcesScreeningMockup from "@/assets/projects/anti-social-forces-screening-device-mockup.png";
-import castMeMockup from "@/assets/projects/cast-me-device-mockup.png";
-import healthcareTrackingMockup from "@/assets/projects/healthcare-it-tracking-system-device-mockup.png";
-import searchWriteMockup from "@/assets/projects/search-write-device-mockup.png";
+import antiSocialForcesScreeningMockup from "@/assets/projects/anti-social-forces-screening-device-mockup.webp";
+import castMeMockup from "@/assets/projects/cast-me-device-mockup.webp";
+import healthcareTrackingMockup from "@/assets/projects/healthcare-it-tracking-system-device-mockup.webp";
+import searchWriteMockup from "@/assets/projects/search-write-device-mockup.webp";
 
 export type SectionId =
   | "hero"
@@ -57,7 +57,10 @@ export const profile = {
   /** Used for the header weather when the visitor's location can't be determined. */
   coordinates: { lat: 34.6937, lon: 135.5023 },
   website: "github.com/rajkumar-sony",
-  resumeUrl: "/resume.pdf",
+  /** Latest resume (Box shared link). */
+  resumeUrl: "https://app.box.com/s/5c4liqe7jpyb2gwqpd3oyvtusryndxnq",
+  /** PDF attachment filename when the resume is emailed after approval. */
+  resumeAttachmentFilename: "RajKumarSony_JavaBackendEngineer_Resume.pdf",
   photo: "https://github.com/rajkumar-sony.png?size=400",
   idCard: {
     specialty: "Java Backend & Cloud",
@@ -461,7 +464,9 @@ export const career: CareerEntry[] = [
 
 export type EducationEntry = {
   degree: string;
-  school: string;
+  college: string;
+  university: string;
+  location: string;
   period: string;
   badge: { label: string; tone: "success" | "neutral" };
   icon: LucideIcon;
@@ -474,7 +479,9 @@ export type EducationEntry = {
 export const education: EducationEntry[] = [
   {
     degree: "Bachelor of Computer Applications (BCA)",
-    school: "Sachchidanand Sinha College (Magadh University), Aurangabad, Bihar",
+    college: "Sachchidanand Sinha College",
+    university: "Magadh University, Bodh Gaya",
+    location: "Aurangabad, Bihar",
     period: "May 2015 – Oct 2018",
     badge: { label: "70.75%", tone: "neutral" },
     icon: BookOpen,
@@ -486,7 +493,9 @@ export const education: EducationEntry[] = [
   },
   {
     degree: "Master of Computer Applications (MCA)",
-    school: "CMR Institute of Technology (VTU), Bangalore",
+    college: "CMR Institute of Technology",
+    university: "Visvesvaraya Technological University",
+    location: "Bangalore, Karnataka",
     period: "Aug 2019 – Sep 2022",
     badge: { label: "CGPA 8.4/10", tone: "success" },
     icon: GraduationCap,

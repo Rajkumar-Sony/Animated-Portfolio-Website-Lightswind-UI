@@ -26,10 +26,12 @@ function useClock() {
 
 export function Header({ active }: HeaderProps) {
   const [open, setOpen] = useState(false);
-  const { y, direction } = useScrollState();
+  const { y, direction, atBottom } = useScrollState();
   const now = useClock();
   const menuId = useId();
-  const hidden = !open && direction === "down" && y > 160;
+  // Hidden while scrolling down, except when the footer is in view — there the
+  // header always re-appears (its nav duplicates the footer links' context).
+  const hidden = !open && direction === "down" && y > 160 && !atBottom;
 
   useEffect(() => {
     if (!open) return;

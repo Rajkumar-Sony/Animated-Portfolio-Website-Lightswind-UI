@@ -21,6 +21,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import ScrollStack, { type ScrollStackCard } from "@/components/lightswind-pro/scroll-stack";
+import { GridPattern } from "@/components/ui/GridPattern";
 import { PageMascot } from "@/components/ui/PageMascot";
 import { Reveal, RevealItem } from "@/components/ui/Reveal";
 import { Section, SectionHeading } from "@/components/ui/Section";
@@ -36,16 +37,25 @@ import { easeOut } from "@/lib/motion";
 
 type Tone = (typeof skills.traits)[number]["tone"];
 
-const traitStyles: Record<Tone, { className: string; icon: LucideIcon }> = {
-  amber: { className: "border-amber-300/60 bg-amber-50 text-amber-800 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-200", icon: Crown },
-  violet: { className: "border-violet-300/60 bg-violet-50 text-violet-800 dark:border-violet-400/30 dark:bg-violet-400/10 dark:text-violet-200", icon: Puzzle },
-  sky: { className: "border-sky-300/60 bg-sky-50 text-sky-800 dark:border-sky-400/30 dark:bg-sky-400/10 dark:text-sky-200", icon: Workflow },
-  rose: { className: "border-rose-300/60 bg-rose-50 text-rose-800 dark:border-rose-400/30 dark:bg-rose-400/10 dark:text-rose-200", icon: Medal },
-  yellow: { className: "border-yellow-300/70 bg-yellow-50 text-yellow-800 dark:border-yellow-400/30 dark:bg-yellow-400/10 dark:text-yellow-200", icon: Lightbulb },
-  emerald: { className: "border-emerald-300/60 bg-emerald-50 text-emerald-800 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-200", icon: Handshake },
+const traitStyles: Record<Tone, { chip: string; tile: string; icon: LucideIcon }> = {
+  amber: { chip: "hover:border-amber-400/40 hover:shadow-amber-500/10", tile: "bg-amber-400/10 text-amber-600 dark:text-amber-300", icon: Crown },
+  violet: { chip: "hover:border-violet-400/40 hover:shadow-violet-500/10", tile: "bg-violet-400/10 text-violet-600 dark:text-violet-300", icon: Puzzle },
+  sky: { chip: "hover:border-sky-400/40 hover:shadow-sky-500/10", tile: "bg-sky-400/10 text-sky-600 dark:text-sky-300", icon: Workflow },
+  rose: { chip: "hover:border-rose-400/40 hover:shadow-rose-500/10", tile: "bg-rose-400/10 text-rose-600 dark:text-rose-300", icon: Medal },
+  yellow: { chip: "hover:border-yellow-400/40 hover:shadow-yellow-500/10", tile: "bg-yellow-400/10 text-yellow-600 dark:text-yellow-300", icon: Lightbulb },
+  emerald: { chip: "hover:border-emerald-400/40 hover:shadow-emerald-500/10", tile: "bg-emerald-400/10 text-emerald-600 dark:text-emerald-300", icon: Handshake },
 };
 
 const skillIcons: LucideIcon[] = [CodeXml, Server, Sparkles, Building2, Rocket];
+
+/** Shaded cells for the learner card's GridPattern backdrop (column, row). */
+const LEARNER_GRID_SQUARES: ReadonlyArray<readonly [number, number]> = [
+  [7, 1],
+  [9, 3],
+  [6, 2],
+  [11, 4],
+  [8, 5],
+];
 
 function DegreeContent({ item }: { item: (typeof education)[number] }) {
   const Icon = item.icon;
@@ -55,17 +65,24 @@ function DegreeContent({ item }: { item: (typeof education)[number] }) {
         <Icon aria-hidden className="size-5" />
       </span>
       <h3 className="mt-4 text-2xl leading-tight font-bold tracking-tight sm:text-3xl">{item.degree}</h3>
-      <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-medium text-white/80">
-        <span className="inline-flex items-center gap-1.5">
+      <div className="mt-2 flex flex-col gap-1 text-xs font-medium text-white/80">
+        <p className="flex items-center gap-1.5">
           <Building2 aria-hidden className="size-3.5" />
-          {item.school}
-        </span>
-        <span aria-hidden>•</span>
-        <span className="inline-flex items-center gap-1.5">
-          <Calendar aria-hidden className="size-3.5" />
-          <time>{item.period}</time>
-        </span>
-      </p>
+          <span className="text-white/60">College:</span>
+          <span>{item.college}</span>
+        </p>
+        <p>
+          <span className="text-white/60">University:</span> {item.university}
+        </p>
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span>{item.location}</span>
+          <span aria-hidden>•</span>
+          <span className="inline-flex items-center gap-1.5">
+            <Calendar aria-hidden className="size-3.5" />
+            <time>{item.period}</time>
+          </span>
+        </p>
+      </div>
       <ul className="mt-4 grid gap-x-6 gap-y-2 border-t border-white/20 pt-4 sm:grid-cols-2">
         {item.highlights.map((point) => (
           <li key={point} className="flex gap-2.5 text-xs leading-relaxed text-white/85 sm:text-sm">
@@ -318,31 +335,59 @@ export function Education() {
                 Core competencies
               </span>
             </div>
-            <ul className="mt-5 flex flex-wrap gap-2">
+            <ul className="mt-5 flex flex-wrap gap-2.5">
               {skills.traits.map(({ name, tone }) => {
-                const { className, icon: TraitIcon } = traitStyles[tone];
+                const { chip, tile, icon: TraitIcon } = traitStyles[tone];
                 return (
                   <li
                     key={name}
                     className={cn(
-                      "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-transform duration-150 hover:-translate-y-0.5",
-                      className,
+                      "group/chip inline-flex items-center gap-2 rounded-full border border-line bg-surface-sunken py-1.5 pr-3.5 pl-1.5 text-xs font-semibold text-fg transition-all duration-200 ease-out",
+                      "hover:-translate-y-0.5 hover:bg-surface-raised hover:shadow-lg",
+                      chip,
                     )}
                   >
-                    <TraitIcon aria-hidden className="size-3.5" />
+                    <span
+                      className={cn(
+                        "grid size-5 shrink-0 place-items-center rounded-full transition-transform duration-200 ease-out group-hover/chip:scale-110",
+                        tile,
+                      )}
+                    >
+                      <TraitIcon aria-hidden className="size-3" />
+                    </span>
                     {name}
                   </li>
                 );
               })}
             </ul>
             <div className="mt-auto pt-6">
-              <div className="relative overflow-hidden rounded-sm border border-line bg-surface-sunken p-5">
-                <div aria-hidden className="bg-gradient-accent absolute inset-y-0 left-0 w-1" />
-                <p className="flex items-center gap-2 text-sm font-bold">
-                  <Rocket aria-hidden className="size-4" />
+              <div className="relative isolate overflow-hidden rounded-sm border border-line bg-surface-raised p-5 shadow-soft transition-[border-color,box-shadow] duration-300 hover:border-line-strong hover:shadow-md">
+                <div
+                  aria-hidden
+                  className="bg-gradient-accent absolute inset-y-0 left-0 z-10 w-[3px] animate-[learner-accent-flow_8s_ease-in-out_infinite]"
+                  style={{ backgroundSize: "300% 100%" }}
+                />
+                <div aria-hidden className="pointer-events-none absolute -inset-7 -z-10">
+                  <div className="absolute -inset-[25%] -skew-y-12 [mask-image:linear-gradient(225deg,black,transparent)]">
+                    <motion.div
+                      className="absolute inset-0"
+                      animate={{ y: [0, -30, 0] }}
+                      transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <GridPattern
+                        squares={LEARNER_GRID_SQUARES}
+                        className="fill-accent-to/15 stroke-accent-to/25"
+                      />
+                    </motion.div>
+                  </div>
+                </div>
+                <p className="relative flex items-center gap-2.5 text-sm font-bold">
+                  <span className="bg-gradient-accent grid size-7 shrink-0 place-items-center rounded-full shadow-sm">
+                    <Rocket aria-hidden className="size-3.5 text-white dark:text-black" />
+                  </span>
                   {skills.learner.title}
                 </p>
-                <p className="mt-1.5 text-sm leading-relaxed text-fg-muted">{skills.learner.body}</p>
+                <p className="relative mt-2.5 text-sm leading-relaxed text-fg-muted">{skills.learner.body}</p>
               </div>
             </div>
           </RevealItem>

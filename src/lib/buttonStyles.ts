@@ -5,7 +5,7 @@ export type ButtonVariant = "primary" | "secondary" | "ghost";
 const base =
   "group inline-flex min-h-11 items-center justify-center gap-2 overflow-hidden rounded-full px-6 text-sm font-semibold whitespace-nowrap " +
   "transition-[transform,background-color,border-color,box-shadow,color] duration-150 ease-out " +
-  "active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 " +
+  "active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus disabled:pointer-events-none disabled:opacity-50 " +
   "aria-busy:cursor-progress";
 
 const variants: Record<ButtonVariant, string> = {

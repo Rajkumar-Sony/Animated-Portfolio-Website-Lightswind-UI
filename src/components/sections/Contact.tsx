@@ -1,8 +1,9 @@
 import { useId, useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CircleCheck, Loader2, Mail, MapPin, Send } from "lucide-react";
+import { Loader2, Mail, MapPin, Send } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AnimatedArrowButtonContent } from "@/components/ui/AnimatedArrowButtonContent";
+import { MessageSentModal } from "@/components/ui/MessageSentModal";
 import WorldMap, { DEFAULT_ARCS, DEFAULT_MARKERS } from "@/components/lightswind/world-map";
 import { Section } from "@/components/ui/Section";
 import { contact, profile } from "@/data/portfolio";
@@ -11,9 +12,11 @@ import { fadeUp, stagger } from "@/lib/motion";
 
 type Fields = { name: string; email: string; message: string };
 type Errors = Partial<Record<keyof Fields, string>>;
-type Status = "idle" | "sending" | "sent";
+type Status = "idle" | "sending" | "sent" | "error";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/** Server endpoint that thanks the sender and forwards the message to the owner's Zoho inbox. */
+const CONTACT_ENDPOINT = import.meta.env.VITE_CONTACT_ENDPOINT;
 
 function validate(fields: Fields): Errors {
   const errors: Errors = {};
@@ -48,6 +51,7 @@ export function Contact() {
   const [errors, setErrors] = useState<Errors>({});
   const [touched, setTouched] = useState<Partial<Record<keyof Fields, boolean>>>({});
   const [status, setStatus] = useState<Status>("idle");
+  const [senderName, setSenderName] = useState("");
 
   const update = (key: keyof Fields) => (value: string) => {
     const next = { ...fields, [key]: value };
@@ -61,7 +65,7 @@ export function Contact() {
     setErrors(validate(fields));
   };
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const found = validate(fields);
     setErrors(found);
@@ -73,6 +77,38 @@ export function Contact() {
     }
 
     setStatus("sending");
+
+    // With the server configured, the message is delivered over SMTP: the sender
+    // gets a thank-you email and the owner a notification with the visitor's text.
+    if (CONTACT_ENDPOINT) {
+      try {
+        const response = await fetch(CONTACT_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            name: fields.name.trim(),
+            email: fields.email.trim(),
+            message: fields.message.trim(),
+          }),
+        });
+        const payload = (await response.json().catch(() => null)) as { error?: string; mock?: boolean } | null;
+        if (!response.ok) throw new Error(payload?.error || `Contact failed with status ${response.status}`);
+        if (import.meta.env.DEV && payload?.mock) {
+          console.warn(
+            "[contact] Server is in MOCK mode — no email was sent. Set ZOHO_MAIL_APP_PASSWORD in .env.local and restart npm run dev:resume-server.",
+          );
+        }
+        setSenderName(fields.name);
+        setStatus("sent");
+        setFields({ name: "", email: "", message: "" });
+        setTouched({});
+      } catch {
+        setStatus("error");
+      }
+      return;
+    }
+
+    // No endpoint configured — fall back to a prefilled email to the owner.
     const subject = encodeURIComponent(`Portfolio enquiry from ${fields.name.trim()}`);
     const body = encodeURIComponent(`${fields.message.trim()}\n\n— ${fields.name.trim()} (${fields.email.trim()})`);
     window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
@@ -194,7 +230,7 @@ export function Contact() {
           <Button type="submit" className="mt-2 w-full" aria-busy={status === "sending"} disabled={status === "sending"}>
             {status === "sending" ? (
               <>
-                <Loader2 aria-hidden className="size-4 animate-spin" /> Opening your email app…
+                <Loader2 aria-hidden className="size-4 animate-spin" /> Sending your message…
               </>
             ) : (
               <AnimatedArrowButtonContent icon={Send}>Send Message</AnimatedArrowButtonContent>
@@ -203,20 +239,25 @@ export function Contact() {
 
           <div aria-live="polite" className="min-h-6">
             <AnimatePresence>
-              {status === "sent" && (
+              {status === "error" && (
                 <motion.p
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="mt-3 flex items-center justify-center gap-2 text-sm text-success"
+                  className="mt-3 text-center text-sm text-danger"
                 >
-                  <CircleCheck aria-hidden className="size-4" />
-                  Your email app should now have the message ready to send.
+                  Could not send your message right now. Please try again, or email me at{" "}
+                  <a href={`mailto:${profile.email}`} className="underline underline-offset-2 hover:text-fg">
+                    {profile.email}
+                  </a>
+                  .
                 </motion.p>
               )}
             </AnimatePresence>
           </div>
         </motion.form>
+
+        <MessageSentModal open={status === "sent"} name={senderName} onClose={() => setStatus("idle")} />
       </motion.div>
     </Section>
   );

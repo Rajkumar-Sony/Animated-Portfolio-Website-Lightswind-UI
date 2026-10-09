@@ -29,16 +29,30 @@ function useLivery(direction: "x" | "y") {
 
 const WINDOWS = Array.from({ length: 20 }, (_, i) => 30 + i * 3.6);
 
-/** Side-view airliner drawn nose-right; mirrored when heading left. */
-export function Airplane({ heading }: { heading: Heading }) {
+/** Side-view airliner drawn nose-right; mirrored when heading left.
+ *  width/height are SVG attributes (defaults fill the parent), so nesting inside
+ *  another SVG sizes the viewport in map units without CSS cascade surprises. */
+export function Airplane({
+  heading,
+  width = "100%",
+  height = "100%",
+  className,
+}: {
+  heading: Heading;
+  width?: number | string;
+  height?: number | string;
+  className?: string;
+}) {
   const livery = useLivery("x");
   const trailId = `${livery.id}-trail`;
 
   return (
     <svg
       viewBox={`0 0 ${AIRPLANE.width} ${AIRPLANE.height}`}
+      width={width}
+      height={height}
       overflow="visible"
-      className="size-full drop-shadow-[0_4px_8px_rgb(0_0_0/0.18)]"
+      className={cn("drop-shadow-[0_4px_8px_rgb(0_0_0/0.18)]", className)}
       style={{ transform: heading === -1 ? "scaleX(-1)" : undefined }}
     >
       <defs>

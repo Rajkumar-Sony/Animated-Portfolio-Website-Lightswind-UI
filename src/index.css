@@ -240,6 +240,7 @@ select,
 @theme inline {
   --font-sans: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Black Ops One", system-ui, sans-serif;
+  --font-hero: "Unbounded", ui-sans-serif, system-ui, sans-serif;
 
   --color-surface: var(--surface);
   --color-surface-raised: var(--surface-raised);
@@ -852,6 +853,17 @@ select,
     var(--accent-via),
     var(--accent-to)
   );
+}
+
+/* Slow gradient flow along the learner card's accent bar in Education. */
+@keyframes learner-accent-flow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 /* Hazard tape; the 16px tile repeats seamlessly, so `animate-hazard-crawl` can slide it. */

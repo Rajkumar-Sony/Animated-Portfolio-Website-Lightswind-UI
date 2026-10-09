@@ -159,6 +159,7 @@ export function IdCard() {
                       width={136}
                       height={136}
                       fetchPriority="high"
+                      decoding="sync"
                       draggable={false}
                       className="size-34 rounded-full border-4 border-surface-raised object-cover"
                     />

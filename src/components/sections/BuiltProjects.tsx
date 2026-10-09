@@ -1,7 +1,7 @@
 import { ThreeDRotatingCarousel } from "@/components/lightswind-pro/3d-rotating-carousel";
 import { PageMascot } from "@/components/ui/PageMascot";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import courseVaultMockup from "@/assets/projects/coursevault-device-mockup.png";
+import courseVaultMockup from "@/assets/projects/coursevault-device-mockup.webp";
 
 const builtProjectItems = [
   {

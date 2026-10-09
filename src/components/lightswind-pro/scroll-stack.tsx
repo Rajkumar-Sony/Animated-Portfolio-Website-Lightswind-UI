@@ -212,13 +212,15 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
                   }}
                 >
                   {card.backgroundImage ? (
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        backgroundImage: `url('${card.backgroundImage}')`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
+                    <img
+                      src={card.backgroundImage}
+                      alt=""
+                      width={1600}
+                      height={900}
+                      loading={index === 0 ? "eager" : "lazy"}
+                      decoding={index === 0 ? "sync" : "async"}
+                      fetchPriority={index === 0 ? "high" : "low"}
+                      className="absolute inset-0 size-full object-cover"
                     />
                   ) : (
                     <div className="bg-gradient-accent absolute inset-0" />

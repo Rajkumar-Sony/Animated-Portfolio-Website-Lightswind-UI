@@ -68,7 +68,19 @@ export function Footer() {
           <SocialLinks variant="pill" />
           <p className="flex items-center gap-1.5 text-xs font-medium text-fg">
             Built with
-            <Heart aria-label="love" className="size-3.5 fill-rose-500 text-rose-500" />
+            <motion.span
+              aria-hidden
+              className="inline-flex"
+              animate={{ scale: [1, 1.25, 1.05, 1.3, 1] }}
+              transition={{
+                duration: 1.4,
+                repeat: Infinity,
+                ease: "easeInOut",
+                times: [0, 0.12, 0.22, 0.34, 0.46],
+              }}
+            >
+              <Heart aria-label="love" className="size-3.5 fill-rose-500 text-rose-500" />
+            </motion.span>
             by
             <a
               href={linkedin}

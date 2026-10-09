@@ -23,6 +23,8 @@ export function Monogram({ initials, photo, className }: MonogramProps) {
             alt=""
             width={36}
             height={36}
+            loading="eager"
+            decoding="async"
             draggable={false}
             onError={() => setFailed(true)}
             className="size-full origin-[50%_30%] scale-[1.45] object-cover"
