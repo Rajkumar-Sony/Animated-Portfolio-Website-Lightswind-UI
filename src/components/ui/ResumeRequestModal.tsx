@@ -74,7 +74,7 @@ export function ResumeRequestModal({ open, onClose }: ResumeRequestModalProps) {
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ email: value, source: "resume-request", resumeUrl: profile.resumeUrl }),
+        body: JSON.stringify({ email: value, source: "resume-request" }),
       });
       const payload = (await response.json().catch(() => null)) as { error?: string; mock?: boolean } | null;
       if (!response.ok) {

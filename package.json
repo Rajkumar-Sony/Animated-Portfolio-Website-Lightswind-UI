@@ -11,6 +11,9 @@
     "dev:all": "npm run dev:resume-server & npm run dev",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "test:resume-approval-flow": "node scripts/test-resume-approval-flow.mjs",
+    "test:approval-tokens": "node scripts/test-approval-tokens.mjs",
+    "test:email-validation": "node scripts/test-email-validation.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
