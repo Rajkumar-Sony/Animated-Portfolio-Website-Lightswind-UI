@@ -1,23 +1,45 @@
-import type { ReactNode } from "react";
-import { useEffect } from "react";
-import { MotionConfig, useReducedMotion } from "framer-motion";
+import type { ComponentType, ReactNode } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
+import { MotionConfig, useInView, useReducedMotion } from "framer-motion";
 import { ReactLenis } from "lenis/react";
-import { Footer } from "@/components/layout/Footer";
+import { DeferredFooter } from "@/components/layout/DeferredFooter";
 import { Header } from "@/components/layout/Header";
 import { SectionDock } from "@/components/layout/SectionDock";
-import { About } from "@/components/sections/About";
-import { BuiltProjects } from "@/components/sections/BuiltProjects";
-import { Career } from "@/components/sections/Career";
-import { Contact } from "@/components/sections/Contact";
-import { Education } from "@/components/sections/Education";
-import { Faq } from "@/components/sections/Faq";
 import { Hero } from "@/components/sections/Hero";
-import { Projects } from "@/components/sections/Projects";
-import { Services } from "@/components/sections/Services";
 import type { SectionId } from "@/data/portfolio";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { useMotionProfile } from "@/hooks/useMotionProfile";
 import { useScrollState } from "@/hooks/useScrollState";
+
+const loadAbout = () => import("@/components/sections/About").then((module) => ({ default: module.About }));
+const loadServices = () => import("@/components/sections/Services").then((module) => ({ default: module.Services }));
+const loadProjects = () => import("@/components/sections/Projects").then((module) => ({ default: module.Projects }));
+const loadBuiltProjects = () =>
+  import("@/components/sections/BuiltProjects").then((module) => ({ default: module.BuiltProjects }));
+const loadCareer = () => import("@/components/sections/Career").then((module) => ({ default: module.Career }));
+const loadEducation = () => import("@/components/sections/Education").then((module) => ({ default: module.Education }));
+const loadFaq = () => import("@/components/sections/Faq").then((module) => ({ default: module.Faq }));
+const loadContact = () => import("@/components/sections/Contact").then((module) => ({ default: module.Contact }));
+
+const About = lazy(loadAbout);
+const Services = lazy(loadServices);
+const Projects = lazy(loadProjects);
+const BuiltProjects = lazy(loadBuiltProjects);
+const Career = lazy(loadCareer);
+const Education = lazy(loadEducation);
+const Faq = lazy(loadFaq);
+const Contact = lazy(loadContact);
+
+const deferredSectionPreloads = [
+  loadAbout,
+  loadServices,
+  loadProjects,
+  loadBuiltProjects,
+  loadCareer,
+  loadEducation,
+  loadFaq,
+  loadContact,
+];
 
 const SECTION_IDS: readonly SectionId[] = [
   "hero",
@@ -75,6 +97,30 @@ function useContentProtection() {
   }, []);
 }
 
+function useDeferredSectionPreload() {
+  useEffect(() => {
+    let cancelled = false;
+    const preload = () => {
+      if (cancelled) return;
+      void Promise.allSettled(deferredSectionPreloads.map((load) => load()));
+    };
+
+    if ("requestIdleCallback" in window) {
+      const idleId = window.requestIdleCallback(preload, { timeout: 2500 });
+      return () => {
+        cancelled = true;
+        window.cancelIdleCallback(idleId);
+      };
+    }
+
+    const timeoutId = globalThis.setTimeout(preload, 1200);
+    return () => {
+      cancelled = true;
+      globalThis.clearTimeout(timeoutId);
+    };
+  }, []);
+}
+
 function SmoothScroll({ children }: { children: ReactNode }) {
   const reduceMotion = useReducedMotion();
   const { preferNativeScroll } = useMotionProfile();
@@ -87,8 +133,24 @@ function SmoothScroll({ children }: { children: ReactNode }) {
   );
 }
 
+function DeferredSection({ Component, minHeight = "80vh" }: { Component: ComponentType; minHeight?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { margin: "900px 0px", once: true });
+
+  return (
+    <div ref={ref} style={{ minHeight }}>
+      {inView ? (
+        <Suspense fallback={<div style={{ minHeight }} />}>
+          <Component />
+        </Suspense>
+      ) : null}
+    </div>
+  );
+}
+
 export default function App() {
   useContentProtection();
+  useDeferredSectionPreload();
   const active = useActiveSection(SECTION_IDS);
   const { y } = useScrollState();
   const pastHero = y > window.innerHeight * 0.6;
@@ -105,16 +167,16 @@ export default function App() {
         <Header active={active} />
         <main id="main" tabIndex={-1} className="outline-none">
           <Hero />
-          <About />
-          <Services />
-          <Projects />
-          <BuiltProjects />
-          <Career />
-          <Education />
-          <Faq />
-          <Contact />
+          <DeferredSection Component={About} />
+          <DeferredSection Component={Services} />
+          <DeferredSection Component={Projects} />
+          <DeferredSection Component={BuiltProjects} />
+          <DeferredSection Component={Career} />
+          <DeferredSection Component={Education} />
+          <DeferredSection Component={Faq} minHeight="48vh" />
+          <DeferredSection Component={Contact} minHeight="72vh" />
         </main>
-        <Footer />
+        <DeferredFooter />
         <SectionDock active={active} visible={pastHero} />
       </SmoothScroll>
     </MotionConfig>

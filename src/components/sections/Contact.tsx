@@ -17,7 +17,12 @@ type Status = "idle" | "sending" | "sent" | "error";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 /** Server endpoint that thanks the sender and forwards the message to the owner's Zoho inbox. */
-const CONTACT_ENDPOINT = import.meta.env.VITE_CONTACT_ENDPOINT;
+const configuredContactEndpoint = import.meta.env.VITE_CONTACT_ENDPOINT;
+const isLocalContactEndpoint = /^https?:\/\/(localhost|127\.0\.0\.1)(?::\d+)?\b/.test(configuredContactEndpoint || "");
+const CONTACT_ENDPOINT =
+  configuredContactEndpoint && !(import.meta.env.PROD && isLocalContactEndpoint)
+    ? configuredContactEndpoint
+    : "/api/contact";
 
 function validate(fields: Fields): Errors {
   const errors: Errors = {};

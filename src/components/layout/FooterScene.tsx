@@ -20,26 +20,31 @@ export function FooterScene({ className }: { className?: string }) {
          * is max(100%, 56.25cqw) of the footer, and at 85% across the ridge sits 43.9% of the way down it.
          */
         "[--sun-x:85%] [--sun-y:calc(50%_-_0.061_*_max(100%,56.25cqw))]",
-        !inView && "[&_*]:[animation-play-state:paused]",
         className,
       )}
     >
       {/* Dark theme: warm afterglow the setting sun casts up into the footer. */}
-      <div className="absolute inset-0 hidden bg-sunset-afterglow mask-scene [--fade-bottom:0px] [--fade-top:12rem] dark:block" />
+      {inView && <div className="absolute inset-0 hidden bg-sunset-afterglow mask-scene [--fade-bottom:0px] [--fade-top:12rem] dark:block" />}
 
-      <div className="absolute inset-0 mask-scene">
-        <FooterLandscape active={inView} className="absolute inset-0" />
-      </div>
+      {inView && (
+        <div className="absolute inset-0 mask-scene">
+          <FooterLandscape active className="absolute inset-0" />
+        </div>
+      )}
 
       {/* Dark theme: the sun itself, half sunk behind the ridge. */}
-      <div className="absolute inset-0 hidden mask-scene [--fade-bottom:0px] [--fade-top:10rem] dark:block">
-        <span className="absolute top-(--sun-y) left-(--sun-x) size-[36rem] -translate-1/2 rounded-full bg-sun-halo" />
-        <SettingSun />
-      </div>
+      {inView && (
+        <div className="absolute inset-0 hidden mask-scene [--fade-bottom:0px] [--fade-top:10rem] dark:block">
+          <span className="absolute top-(--sun-y) left-(--sun-x) size-[36rem] -translate-1/2 rounded-full bg-sun-halo" />
+          <SettingSun />
+        </div>
+      )}
 
-      <div className="absolute inset-0 mask-scene">
-        <FooterBirds active={inView} className="absolute inset-0" />
-      </div>
+      {inView && (
+        <div className="absolute inset-0 mask-scene">
+          <FooterBirds active className="absolute inset-0" />
+        </div>
+      )}
     </div>
   );
 }

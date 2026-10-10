@@ -471,6 +471,50 @@ select,
     }
   }
 
+  @keyframes mobile-sky-cruise {
+    0% {
+      transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    50% {
+      transform: translate3d(62vw, -8px, 0) rotate(1deg);
+    }
+    100% {
+      transform: translate3d(128vw, 3px, 0) rotate(0deg);
+    }
+  }
+
+  @keyframes mobile-sky-balloon {
+    0%,
+    100% {
+      transform: translate3d(0, 10px, 0) rotate(-1deg);
+    }
+    50% {
+      transform: translate3d(12vw, -28px, 0) rotate(1deg);
+    }
+  }
+
+  @keyframes mobile-sky-heli {
+    0%,
+    100% {
+      transform: translate3d(0, 4px, 0) rotate(-3deg);
+    }
+    50% {
+      transform: translate3d(-28vw, -12px, 0) rotate(-5deg);
+    }
+  }
+
+  @keyframes mobile-sky-parachute {
+    0% {
+      transform: translate3d(-4vw, -14px, 0) rotate(-2deg);
+    }
+    50% {
+      transform: translate3d(5vw, 36px, 0) rotate(2deg);
+    }
+    100% {
+      transform: translate3d(-3vw, 84px, 0) rotate(-1deg);
+    }
+  }
+
   @keyframes marquee {
     to {
       transform: translateX(-50%);

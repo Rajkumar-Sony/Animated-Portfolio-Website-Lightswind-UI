@@ -12,8 +12,10 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test:resume-approval-flow": "node scripts/test-resume-approval-flow.mjs",
+    "test:contact-email-flow": "node scripts/test-contact-email-flow.mjs",
     "test:approval-tokens": "node scripts/test-approval-tokens.mjs",
     "test:email-validation": "node scripts/test-email-validation.mjs",
+    "test:e2e:mobile-animation": "playwright test tests/e2e/mobile-animation.spec.ts",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -37,6 +39,7 @@
   "devDependencies": {
     "@eslint/js": "^9.32.0",
     "@hiogawa/vite-plugin-error-overlay": "^0.0.1",
+    "@playwright/test": "^1.64.0",
     "@tailwindcss/vite": "^4.1.11",
     "@types/node": "^24.2.1",
     "@types/nodemailer": "^8.0.2",

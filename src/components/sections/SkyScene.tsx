@@ -219,6 +219,7 @@ const FLEET: { craft: Craft; minWidth?: number }[] = [
 ];
 
 const KINDS = [balloon, parachute, helicopter, airplane];
+const MOBILE_FLEET = new Set([balloon, parachute, helicopter, airplane]);
 
 /**
  * Splits the width into one column per craft of a kind. Each kind starts its columns at a different
@@ -431,7 +432,14 @@ export function SkyScene({ className }: { className?: string }) {
 
   useEffect(() => {
     if (!bounds) return;
-    const slots = FLEET.flatMap((item, slot) => (bounds.width >= (item.minWidth ?? 0) ? [slot] : []));
+    const seen = new Set<Craft>();
+    const slots = FLEET.flatMap((item, slot) => {
+      if (bounds.width < (item.minWidth ?? 0)) return [];
+      if (!reduceEffects) return [slot];
+      if (!MOBILE_FLEET.has(item.craft) || seen.has(item.craft)) return [];
+      seen.add(item.craft);
+      return [slot];
+    });
     // The scene drifts with the parallax, so page content sits that much higher in scene coordinates.
     const pageInScene = () => {
       const shift = parallaxEnabled ? parallax.get() : 0;
@@ -552,7 +560,7 @@ export function SkyScene({ className }: { className?: string }) {
         return (
           <motion.div
             key={slot}
-            className={cn("absolute top-0 left-0", !reduceEffects && "will-change-transform")}
+            className="absolute top-0 left-0 will-change-transform"
             style={{
               x: rig.x,
               y: rig.y,

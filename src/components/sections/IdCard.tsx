@@ -5,6 +5,7 @@ import { encode } from "uqr";
 import { profile, socials } from "@/data/portfolio";
 import { cn } from "@/lib/cn";
 import { code128 } from "@/lib/code128";
+import { useMotionProfile } from "@/hooks/useMotionProfile";
 import { LanyardStrap } from "./LanyardStrap";
 import { LanyardTag, STRAP_END_Y } from "./LanyardTag";
 
@@ -86,6 +87,68 @@ function CardSlot() {
   );
 }
 
+function StaticIdCard() {
+  return (
+    <div data-sky-avoid className="flex flex-col items-center">
+      <div className="relative" style={{ width: CARD_WIDTH, maxWidth: "calc(100vw - 2rem)" }}>
+        <span
+          aria-hidden
+          className="absolute -top-3 left-1/2 z-30 h-5 w-10 -translate-x-1/2 rounded-full border bg-steel shadow-sm"
+        />
+        <LanyardTag className="absolute top-0 left-1/2 z-10 -translate-x-1/2" />
+        <article
+          aria-label={`${profile.name} ID card`}
+          className="relative z-20 mt-[94px] flex h-[476px] flex-col overflow-hidden rounded-md border border-line bg-surface-raised shadow-lg"
+        >
+          <div className="bg-gradient-accent relative h-28 shrink-0">
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-surface-raised/70" />
+          </div>
+          <CardSlot />
+          <div className="relative -mt-21 flex flex-col items-center px-5 text-center">
+            <span className="bg-gradient-accent rounded-full p-1 shadow-md">
+              <img
+                src={profile.photo}
+                alt={`Portrait of ${profile.name}`}
+                width={136}
+                height={136}
+                fetchPriority="high"
+                decoding="async"
+                draggable={false}
+                className="size-34 rounded-full border-4 border-surface-raised object-cover"
+              />
+            </span>
+            <h3 className="mt-3 text-lg font-bold">{profile.name}</h3>
+            <p className="mt-1 rounded-full border border-line px-3 py-1 text-2xs font-semibold">
+              {profile.role}
+            </p>
+          </div>
+          <dl className="mx-5 mt-5 grid grid-cols-2 gap-x-3 gap-y-3 rounded-sm border border-line bg-surface-sunken/60 p-4">
+            <Field label="Specialty">{profile.idCard.specialty}</Field>
+            <Field label="Location">{profile.location}</Field>
+            <Field label="Experience">{profile.idCard.experience}</Field>
+            <Field label="Status">
+              <span className="inline-flex items-center gap-1.5 text-success">
+                <span className="size-1.5 rounded-full bg-success" />
+                {profile.idCard.status}
+              </span>
+            </Field>
+          </dl>
+          <div className="mx-5 mt-auto mb-5 flex flex-col gap-2 pt-2">
+            <Barcode
+              value={linkedin.split("/").filter(Boolean).at(-1) ?? profile.name}
+              label={`Barcode of ${profile.name}'s LinkedIn username`}
+            />
+            <div className="flex justify-between text-2xs font-bold tracking-[0.12em] uppercase">
+              <span>{profile.idCard.credential}</span>
+              <span className="text-fg-muted">{profile.idCard.issuer}</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  );
+}
+
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="flex flex-col gap-0.5">
@@ -95,7 +158,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-export function IdCard() {
+function AnimatedIdCard() {
   const [flipped, setFlipped] = useState(false);
   const reduceMotion = useReducedMotion();
 
@@ -236,4 +299,12 @@ export function IdCard() {
       </button>
     </div>
   );
+}
+
+export function IdCard() {
+  const { reduceEffects } = useMotionProfile();
+
+  if (reduceEffects) return <StaticIdCard />;
+
+  return <AnimatedIdCard />;
 }
