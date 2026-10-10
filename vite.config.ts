@@ -26,4 +26,20 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+          if (id.includes("/react/") || id.includes("/react-dom/") || id.includes("/scheduler/")) return "vendor-react";
+          if (id.includes("/framer-motion/") || id.includes("/motion-dom/") || id.includes("/motion-utils/")) {
+            return "vendor-motion";
+          }
+          if (id.includes("/lucide-react/") || id.includes("/lucide/")) return "vendor-icons";
+          if (id.includes("/@tsparticles/")) return "vendor-particles";
+          if (id.includes("/lenis/")) return "vendor-scroll";
+        },
+      },
+    },
+  },
 }));
